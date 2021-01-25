@@ -56,7 +56,7 @@ joplin.plugins.register({
         
         const selectedFolder = await joplin.workspace.selectedFolder();
         const importNotebook = await joplin.settings.value("importNotebook");
-        let notebookId: string = await getNotebookID(importNotebook);
+        let notebookId = await getNotebookId(importNotebook);
         if (notebookId == null){
           notebookId = selectedFolder.id;
         }
@@ -124,7 +124,7 @@ joplin.plugins.register({
       }
     }
 
-    async function getNotebookID(notebookName: string): Promise<string> {
+    async function getNotebookId(notebookName: string): Promise<string> {
       let pageNum = 1;
       do {
         var folders = await joplin.data.get(["folders"], {
