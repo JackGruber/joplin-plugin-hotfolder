@@ -69,7 +69,10 @@ joplin.plugins.register({
         }
 
         const importTags = await joplin.settings.value("importTags");
-        const addTags = importTags.split(/\s*,\s*/);
+        let addTags = null;
+        if(importTags.trim() !== ""){
+          addTags = importTags.split(/\s*,\s*/);
+        }
 
         const mimeType = await fileType.fromFile(file);
         const fileExt = path.extname(file);
@@ -126,13 +129,15 @@ joplin.plugins.register({
         }
 
         // Tag Note
-        for (let tag of addTags){
-          let tagId = await getTagId(tag);
-          await joplin.data.post(
-            ["tags", tagId, "notes"],
-            null,
-            { id: newNote.id }
-          );
+        if(addTags != null){
+          for (let tag of addTags){
+            let tagId = await getTagId(tag);
+            await joplin.data.post(
+              ["tags", tagId, "notes"],
+              null,
+              { id: newNote.id }
+            );
+          }
         }
 
         try {
