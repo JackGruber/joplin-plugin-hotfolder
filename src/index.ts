@@ -21,6 +21,7 @@ joplin.plugins.register({
       section: "hotfolderSection",
       public: true,
       label: "Hotfolder Path",
+      description: "Please restart Joplin after a change."
     });
 
     await joplin.settings.registerSetting("extensionsAddAsText", {
@@ -29,6 +30,7 @@ joplin.plugins.register({
       section: "hotfolderSection",
       public: true,
       label: "Add as text",
+      description: "Comma separated list of file, which will be imported as text."
     });
 
     await joplin.settings.registerSetting("importNotebook", {
@@ -37,6 +39,9 @@ joplin.plugins.register({
       section: "hotfolderSection",
       public: true,
       label: "Notebook",
+      description: "If no notebook is specified, the import is made to the current notebook.",
+    });
+
     });
 
     await registerHotfolder();
