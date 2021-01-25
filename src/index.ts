@@ -80,7 +80,7 @@ joplin.plugins.register({
         let newBody = null;
 
         if (
-          extensionsAddAsText.toLowerCase().split(",").indexOf(fileExt) !== -1
+          extensionsAddAsText.toLowerCase().split(/\s*,\s*/).indexOf(fileExt) !== -1
         ) {
           console.info("Import as Text");
           try {
