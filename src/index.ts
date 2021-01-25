@@ -48,9 +48,13 @@ joplin.plugins.register({
         const extensionsAddAsText = await joplin.settings.value(
           "extensionsAddAsText"
         );
-        const importNotebook = await joplin.settings.value("importNotebook");
+        
         const selectedFolder = await joplin.workspace.selectedFolder();
-        const notebookId = selectedFolder.id;
+        const importNotebook = await joplin.settings.value("importNotebook");
+        let notebookId: string = await getNotebookID(importNotebook);
+        if (notebookId == null){
+          notebookId = selectedFolder.id;
+        }
 
         const mimeType = await fileType.fromFile(file);
         const fileExt = path.extname(file);
@@ -113,6 +117,23 @@ joplin.plugins.register({
           return;
         }
       }
+    }
+
+    async function getNotebookID(notebookName: string): Promise<string> {
+      let pageNum = 1;
+      do {
+        var folders = await joplin.data.get(["folders"], {
+          fields: "id,title",
+          limit: 50,
+          page: pageNum++,
+        });
+        for (const folder of folders.items) {
+          if (notebookName == folder.title) {
+            return folder.id
+          }
+        }
+      } while (folders.has_more);
+      return null;
     }
 
     async function registerHotfolder() {
