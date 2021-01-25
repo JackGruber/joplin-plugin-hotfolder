@@ -1,6 +1,6 @@
 # Joplin Backup Plugin
 
-A plugin to Monitor a locale folder and import the fiels as a new note.
+A plugin to Monitor a locale folder and import the files as a new note.
 
 <img src="img/main.jpg">
 

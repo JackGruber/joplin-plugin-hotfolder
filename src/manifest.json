@@ -4,7 +4,7 @@
 	"app_min_version": "1.7",
 	"version": "0.1.0",
 	"name": "Hotfolder",
-	"description": "Monitors a locale folder and import the fiels as a new note.",
+	"description": "Monitors a locale folder and import the files as a new note.",
 	"author": "JackGruber",
 	"homepage_url": "https://github.com/JackGruber/joplin-plugin-hotfolder",
 	"repository_url": "https://github.com/JackGruber/joplin-plugin-hotfolder",
