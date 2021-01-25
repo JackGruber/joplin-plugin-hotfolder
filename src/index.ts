@@ -42,6 +42,13 @@ joplin.plugins.register({
       description: "If no notebook is specified, the import is made to the current notebook.",
     });
 
+    await joplin.settings.registerSetting("importTags", {
+      value: "",
+      type: SettingItemType.String,
+      section: "hotfolderSection",
+      public: true,
+      label: "Tags",
+      description: "Comma separated list of tags to be added to the note.",
     });
 
     await registerHotfolder();
@@ -60,6 +67,9 @@ joplin.plugins.register({
         if (notebookId == null){
           notebookId = selectedFolder.id;
         }
+
+        const importTags = await joplin.settings.value("importTags");
+        const addTags = importTags.split(/\s*,\s*/);
 
         const mimeType = await fileType.fromFile(file);
         const fileExt = path.extname(file);
@@ -115,12 +125,42 @@ joplin.plugins.register({
           });
         }
 
+        // Tag Note
+        for (let tag of addTags){
+          let tagId = await getTagId(tag);
+          await joplin.data.post(
+            ["tags", tagId, "notes"],
+            null,
+            { id: newNote.id }
+          );
+        }
+
         try {
           fs.removeSync(file);
         } catch (e) {
           console.error(e);
           return;
         }
+      }
+    }
+
+    async function getTagId(tag: string): Promise<string> {
+      var query = await joplin.data.get(["search"], {
+        query: tag,
+        type: "tag",
+        fields: "id,title",
+      });
+      if(query.items.length === 0){
+        console.log("Create tag '" + tag + "'");
+        const newTag = await joplin.data.post(["tags"], null, {
+          title: tag
+        });
+        return newTag.id;
+      } else if(query.items.length === 1){
+        return query.items[0].id;
+      } else {
+        console.error("More than one tag match!");
+        console.error(query);
       }
     }
 
