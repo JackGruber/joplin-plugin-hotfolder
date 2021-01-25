@@ -8,5 +8,5 @@
 	"author": "JackGruber",
 	"homepage_url": "https://github.com/JackGruber/joplin-plugin-hotfolder",
 	"repository_url": "https://github.com/JackGruber/joplin-plugin-hotfolder",
-	"keywords": []
+	"keywords": ["hotfolder", "import", "monitor"]
 }
