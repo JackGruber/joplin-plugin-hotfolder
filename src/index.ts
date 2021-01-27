@@ -75,7 +75,6 @@ joplin.plugins.register({
             description: "Sections appear on the left after a restart.",
           });
         }
-        console.log(await joplin.settings.value("hotfolderAnz"));
         hotfolderNr++;
       } while ( hotfolderNr < await joplin.settings.value("hotfolderAnz"));
     }
