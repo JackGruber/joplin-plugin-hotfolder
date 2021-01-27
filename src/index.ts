@@ -30,7 +30,7 @@ joplin.plugins.register({
       section: "hotfolderSection",
       public: true,
       label: "Add as text",
-      description: "Comma separated list of file, which will be imported as text."
+      description: "Comma separated list of file extensions, which will be imported as text."
     });
 
     await joplin.settings.registerSetting("importNotebook", {
