@@ -24,6 +24,15 @@ joplin.plugins.register({
       description: "Please restart Joplin after a change."
     });
 
+    await joplin.settings.registerSetting("ignoreFiles", {
+      value: "",
+      type: SettingItemType.String,
+      section: "hotfolderSection",
+      public: true,
+      label: "Ignore Files",
+      description: "Comma separated list of files which will be ignored."
+    });
+
     await joplin.settings.registerSetting("extensionsAddAsText", {
       value: ".txt, .md",
       type: SettingItemType.String,
@@ -54,9 +63,10 @@ joplin.plugins.register({
     await registerHotfolder();
 
     async function processFile(file: string) {
+      const ignoreFiles = await joplin.settings.value("ignoreFiles");
       console.log("File", file, "has been added");
 
-      if (!fs.existsSync(file + ".lock")) {
+      if (!fs.existsSync(file + ".lock") && ignoreFiles.split(/\s*,\s*/).indexOf(path.basename(file)) === -1) {
         const extensionsAddAsText = await joplin.settings.value(
           "extensionsAddAsText"
         );
@@ -146,6 +156,8 @@ joplin.plugins.register({
           console.error(e);
           return;
         }
+      } else {
+        console.info("File is ignored!");
       }
     }
 

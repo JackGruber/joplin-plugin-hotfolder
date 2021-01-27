@@ -32,6 +32,7 @@ The files are added as attachments unless the file extension is defined as `Add 
 Go to `Tools > Options > Backup`
 
 - `Hotfolder Path`: Files from this path will be imported as new notes.
+- `Ignore Files` Comma separated list of files to be ignored.
 - `Add as text`: Files with this file extension are imported as text and not as attachment. Default `.txt, .md`.
 - `Notebook`: In which notebook should the note be created. Default: `Current selected Notebook`.
 - `Tag`: Comma separated list of tags to be added to the note.
