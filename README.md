@@ -1,4 +1,4 @@
-# Joplin Backup Plugin
+# Joplin Hotfolder Plugin
 
 A plugin to Monitor a locale folder and import the files as a new note.
 
