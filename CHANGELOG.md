@@ -1,6 +1,6 @@
 # Changelog
 
-## Not released
+## v0.2.0 (2021-01-27)
 
 - Add: Option to ignore files
 
