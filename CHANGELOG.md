@@ -6,6 +6,8 @@
 - Optimize: Update settings on change without Joplin reload
 - Optimize: Define Subnotebooks
 
+❗ Requires at least Joplin v1.7.1 ❗
+
 ## v0.2.0 (2021-01-27)
 
 - Add: Option to ignore files
