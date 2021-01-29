@@ -219,9 +219,11 @@ joplin.plugins.register({
     }
 
     async function registerHotfolder() {
-      const hotfolderPath = await joplin.settings.value("hotfolderPath");
-      if (hotfolderPath !== "") {
-        const watcher = chokidar
+      const hotfolderAnz = await joplin.settings.value("hotfolderAnz");
+      for(let hotfolderNr=0;hotfolderNr<hotfolderAnz;hotfolderNr++) {
+        let hotfolderPath = await joplin.settings.value("hotfolderPath" + (hotfolderNr == 0 ? '' : hotfolderNr));
+        if(hotfolderPath.trim() != "") {
+          chokidar
           .watch(hotfolderPath, {
             ignored: /(^|[\/\\])\..|\.lock$/, // ignore dotfiles and *.lock
             persistent: true,
@@ -229,11 +231,14 @@ joplin.plugins.register({
             depth: 0,
             usePolling: false, // set true to successfully watch files over a network
           })
+          .on('ready', function() {
+            console.log('Newly watched hotfolder path:', this.getWatched());
+          })
           .on("add", function (path) {
-            processFile(path);
+            console.log("File", path, "has been added");
+            processFile(path, (hotfolderNr == 0 ? '' : hotfolderNr.toString()));
           });
-
-        var watchedPaths = watcher.getWatched();
+        }
       }
     }
   },
