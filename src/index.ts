@@ -5,82 +5,139 @@ const chokidar = require("chokidar");
 const fs = require("fs-extra");
 const fileType = require("file-type");
 const path = require("path");
+let watchers = [];
 
 joplin.plugins.register({
   onStart: async function () {
     console.info("Hotfolder plugin started!");
 
-    await joplin.settings.registerSection("hotfolderSection", {
-      label: "Hotfolder",
-      iconName: "fas fa-eye",
+    async function registerHotfolderSettings() {
+      let hotfolderNr = 0;
+      do {
+        await joplin.settings.registerSection(
+          "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
+          {
+            label:
+              "Hotfolder" +
+              (hotfolderNr == 0 ? "" : " " + (hotfolderNr + 1).toString()),
+            iconName: "fas fa-eye",
+          }
+        );
+
+        await joplin.settings.registerSetting(
+          "hotfolderPath" + (hotfolderNr == 0 ? "" : hotfolderNr),
+          {
+            value: "",
+            type: SettingItemType.String,
+            section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
+            public: true,
+            label: "Hotfolder Path",
+          }
+        );
+
+        await joplin.settings.registerSetting(
+          "ignoreFiles" + (hotfolderNr == 0 ? "" : hotfolderNr),
+          {
+            value: "",
+            type: SettingItemType.String,
+            section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
+            public: true,
+            label: "Ignore Files",
+            description: "Comma separated list of files which will be ignored.",
+          }
+        );
+
+        await joplin.settings.registerSetting(
+          "extensionsAddAsText" + (hotfolderNr == 0 ? "" : hotfolderNr),
+          {
+            value: ".txt, .md",
+            type: SettingItemType.String,
+            section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
+            public: true,
+            label: "Add as text",
+            description:
+              "Comma separated list of file extensions, which will be imported as text.",
+          }
+        );
+
+        await joplin.settings.registerSetting(
+          "importNotebook" + (hotfolderNr == 0 ? "" : hotfolderNr),
+          {
+            value: "",
+            type: SettingItemType.String,
+            section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
+            public: true,
+            label: "Notebook",
+            description:
+              "If no notebook is specified, the import is made to the current notebook.",
+          }
+        );
+
+        await joplin.settings.registerSetting(
+          "importTags" + (hotfolderNr == 0 ? "" : hotfolderNr),
+          {
+            value: "",
+            type: SettingItemType.String,
+            section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
+            public: true,
+            label: "Tags",
+            description:
+              "Comma separated list of tags to be added to the note.",
+          }
+        );
+
+        if (hotfolderNr === 0) {
+          await joplin.settings.registerSetting("hotfolderAnz", {
+            value: 1,
+            minimum: 1,
+            maximum: 10,
+            type: SettingItemType.Int,
+            section: "hotfolderSection",
+            public: true,
+            label: "Numer of Hotfolders",
+            description:
+              "Sections appear on the left (Please restart Joplin after a change).",
+          });
+        }
+        hotfolderNr++;
+      } while (hotfolderNr < (await joplin.settings.value("hotfolderAnz")));
+    }
+
+    joplin.settings.onChange(async (event: any) => {
+      console.log("Settings changed");
+      await registerHotfolder();
     });
 
-    await joplin.settings.registerSetting("hotfolderPath", {
-      value: "",
-      type: SettingItemType.String,
-      section: "hotfolderSection",
-      public: true,
-      label: "Hotfolder Path",
-      description: "Please restart Joplin after a change."
-    });
-
-    await joplin.settings.registerSetting("ignoreFiles", {
-      value: "",
-      type: SettingItemType.String,
-      section: "hotfolderSection",
-      public: true,
-      label: "Ignore Files",
-      description: "Comma separated list of files which will be ignored."
-    });
-
-    await joplin.settings.registerSetting("extensionsAddAsText", {
-      value: ".txt, .md",
-      type: SettingItemType.String,
-      section: "hotfolderSection",
-      public: true,
-      label: "Add as text",
-      description: "Comma separated list of file extensions, which will be imported as text."
-    });
-
-    await joplin.settings.registerSetting("importNotebook", {
-      value: "",
-      type: SettingItemType.String,
-      section: "hotfolderSection",
-      public: true,
-      label: "Notebook",
-      description: "If no notebook is specified, the import is made to the current notebook.",
-    });
-
-    await joplin.settings.registerSetting("importTags", {
-      value: "",
-      type: SettingItemType.String,
-      section: "hotfolderSection",
-      public: true,
-      label: "Tags",
-      description: "Comma separated list of tags to be added to the note.",
-    });
-
+    await registerHotfolderSettings();
     await registerHotfolder();
 
-    async function processFile(file: string) {
-      const ignoreFiles = await joplin.settings.value("ignoreFiles");
-      console.log("File", file, "has been added");
+    async function processFile(file: string, hotfolderNr: string) {
+      const ignoreFiles = await joplin.settings.value(
+        "ignoreFiles" + hotfolderNr
+      );
 
-      if (!fs.existsSync(file + ".lock") && ignoreFiles.split(/\s*,\s*/).indexOf(path.basename(file)) === -1) {
+      if (
+        !fs.existsSync(file + ".lock") &&
+        ignoreFiles.split(/\s*,\s*/).indexOf(path.basename(file)) === -1
+      ) {
         const extensionsAddAsText = await joplin.settings.value(
-          "extensionsAddAsText"
+          "extensionsAddAsText" + hotfolderNr
         );
-        
+
         const selectedFolder = await joplin.workspace.selectedFolder();
-        const importNotebook = await joplin.settings.value("importNotebook");
+        const importNotebook = await joplin.settings.value(
+          "importNotebook" + hotfolderNr
+        );
         let notebookId = await getNotebookId(importNotebook);
-        if (notebookId == null){
+        if (notebookId == null) {
           notebookId = selectedFolder.id;
         }
 
-        const importTags = await joplin.settings.value("importTags");
+        const importTags = await joplin.settings.value(
+          "importTags" + hotfolderNr
+        );
         let addTags = null;
-        if(importTags.trim() !== ""){
+        if (importTags.trim() !== "") {
           addTags = importTags.split(/\s*,\s*/);
         }
 
@@ -93,7 +150,10 @@ joplin.plugins.register({
         let newBody = null;
 
         if (
-          extensionsAddAsText.toLowerCase().split(/\s*,\s*/).indexOf(fileExt) !== -1
+          extensionsAddAsText
+            .toLowerCase()
+            .split(/\s*,\s*/)
+            .indexOf(fileExt) !== -1
         ) {
           console.info("Import as Text");
           try {
@@ -127,7 +187,10 @@ joplin.plugins.register({
             return;
           }
           newBody = "[" + fileName + "](:/" + newResources.id + ")";
-          if (mimeType !== undefined && mimeType.mime.split("/")[0] === "image") {
+          if (
+            mimeType !== undefined &&
+            mimeType.mime.split("/")[0] === "image"
+          ) {
             newBody = "!" + newBody;
           }
 
@@ -139,14 +202,12 @@ joplin.plugins.register({
         }
 
         // Tag Note
-        if(addTags != null){
-          for (let tag of addTags){
+        if (addTags != null) {
+          for (let tag of addTags) {
             let tagId = await getTagId(tag);
-            await joplin.data.post(
-              ["tags", tagId, "notes"],
-              null,
-              { id: newNote.id }
-            );
+            await joplin.data.post(["tags", tagId, "notes"], null, {
+              id: newNote.id,
+            });
           }
         }
 
@@ -167,13 +228,13 @@ joplin.plugins.register({
         type: "tag",
         fields: "id,title",
       });
-      if(query.items.length === 0){
+      if (query.items.length === 0) {
         console.log("Create tag '" + tag + "'");
         const newTag = await joplin.data.post(["tags"], null, {
-          title: tag
+          title: tag,
         });
         return newTag.id;
-      } else if(query.items.length === 1){
+      } else if (query.items.length === 1) {
         return query.items[0].id;
       } else {
         console.error("More than one tag match!");
@@ -191,7 +252,7 @@ joplin.plugins.register({
         });
         for (const folder of folders.items) {
           if (notebookName == folder.title) {
-            return folder.id
+            return folder.id;
           }
         }
       } while (folders.has_more);
@@ -199,21 +260,41 @@ joplin.plugins.register({
     }
 
     async function registerHotfolder() {
-      const hotfolderPath = await joplin.settings.value("hotfolderPath");
-      if (hotfolderPath !== "") {
-        const watcher = chokidar
-          .watch(hotfolderPath, {
-            ignored: /(^|[\/\\])\..|\.lock$/, // ignore dotfiles and *.lock
-            persistent: true,
-            awaitWriteFinish: true,
-            depth: 0,
-            usePolling: false, // set true to successfully watch files over a network
-          })
-          .on("add", function (path) {
-            processFile(path);
-          });
+      const hotfolderAnz = await joplin.settings.value("hotfolderAnz");
 
-        var watchedPaths = watcher.getWatched();
+      if (watchers.length > 0) {
+        for (let watcher of watchers) {
+          watcher.close().then(() => console.log("Hotfolder closed"));
+        }
+        watchers = [];
+      }
+
+      for (let hotfolderNr = 0; hotfolderNr < hotfolderAnz; hotfolderNr++) {
+        let hotfolderPath = "";
+        try {
+          hotfolderPath = await joplin.settings.value(
+            "hotfolderPath" + (hotfolderNr == 0 ? "" : hotfolderNr)
+          );
+        } catch (e) {}
+
+        if (hotfolderPath.trim() != "") {
+          let hotfolderWatcher = chokidar
+            .watch(hotfolderPath, {
+              ignored: /(^|[\/\\])\..|\.lock$/, // ignore dotfiles and *.lock
+              persistent: true,
+              awaitWriteFinish: true,
+              depth: 0,
+              usePolling: false, // set true to successfully watch files over a network
+            })
+            .on("ready", function () {
+              console.log("Newly watched hotfolder path:", this.getWatched());
+            })
+            .on("add", function (path) {
+              console.log("File", path, "has been added");
+              processFile(path, hotfolderNr == 0 ? "" : hotfolderNr.toString());
+            });
+          watchers.push(hotfolderWatcher);
+        }
       }
     }
   },
