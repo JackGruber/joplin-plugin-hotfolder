@@ -82,23 +82,22 @@ joplin.plugins.register({
     await registerHotfolderSettings();
     await registerHotfolder();
 
-    async function processFile(file: string) {
-      const ignoreFiles = await joplin.settings.value("ignoreFiles");
-      console.log("File", file, "has been added");
+    async function processFile(file: string, hotfolderNr: string) {
+      const ignoreFiles = await joplin.settings.value("ignoreFiles" + hotfolderNr);
 
       if (!fs.existsSync(file + ".lock") && ignoreFiles.split(/\s*,\s*/).indexOf(path.basename(file)) === -1) {
         const extensionsAddAsText = await joplin.settings.value(
-          "extensionsAddAsText"
+          "extensionsAddAsText" + hotfolderNr
         );
         
         const selectedFolder = await joplin.workspace.selectedFolder();
-        const importNotebook = await joplin.settings.value("importNotebook");
+        const importNotebook = await joplin.settings.value("importNotebook" + hotfolderNr);
         let notebookId = await getNotebookId(importNotebook);
         if (notebookId == null){
           notebookId = selectedFolder.id;
         }
 
-        const importTags = await joplin.settings.value("importTags");
+        const importTags = await joplin.settings.value("importTags" + hotfolderNr);
         let addTags = null;
         if(importTags.trim() !== ""){
           addTags = importTags.split(/\s*,\s*/);
