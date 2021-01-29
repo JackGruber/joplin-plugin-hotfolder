@@ -95,15 +95,16 @@ joplin.plugins.register({
             section: "hotfolderSection",
             public: true,
             label: "Numer of Hotfolders",
-            description: "Sections appear on the left (Please restart Joplin after a change).",
+            description:
+              "Sections appear on the left (Please restart Joplin after a change).",
           });
         }
         hotfolderNr++;
       } while (hotfolderNr < (await joplin.settings.value("hotfolderAnz")));
     }
 
-    joplin.settings.onChange(async (event:any) => {
-      console.log("Settings changed")
+    joplin.settings.onChange(async (event: any) => {
+      console.log("Settings changed");
       await registerHotfolder();
     });
 
@@ -261,21 +262,20 @@ joplin.plugins.register({
     async function registerHotfolder() {
       const hotfolderAnz = await joplin.settings.value("hotfolderAnz");
 
-      if(watchers.length > 0) {
-        for(let watcher of watchers){
-          watcher.close().then(() => console.log('Hotfolder closed'));
+      if (watchers.length > 0) {
+        for (let watcher of watchers) {
+          watcher.close().then(() => console.log("Hotfolder closed"));
         }
         watchers = [];
       }
 
       for (let hotfolderNr = 0; hotfolderNr < hotfolderAnz; hotfolderNr++) {
-        let hotfolderPath = ""
+        let hotfolderPath = "";
         try {
           hotfolderPath = await joplin.settings.value(
             "hotfolderPath" + (hotfolderNr == 0 ? "" : hotfolderNr)
           );
-        } catch (e) {
-        }
+        } catch (e) {}
 
         if (hotfolderPath.trim() != "") {
           let hotfolderWatcher = chokidar
