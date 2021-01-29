@@ -1,6 +1,6 @@
 # Changelog
 
-## Not release
+## v0.3.0 (2021-01-29)
 
 - Add: Option for multiple Hotfolders
 - Optimize: Update settings on change without Joplin reload
