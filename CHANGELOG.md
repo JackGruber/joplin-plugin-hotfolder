@@ -1,5 +1,10 @@
 # Changelog
 
+## Not release
+
+- Add: Option for multiple Hotfolders
+- Optimize: Update settings on change without Joplin reload
+
 ## v0.2.0 (2021-01-27)
 
 - Add: Option to ignore files
