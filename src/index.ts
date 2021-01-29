@@ -5,6 +5,7 @@ const chokidar = require("chokidar");
 const fs = require("fs-extra");
 const fileType = require("file-type");
 const path = require("path");
+let watchers = [];
 
 joplin.plugins.register({
   onStart: async function () {
@@ -31,7 +32,6 @@ joplin.plugins.register({
             section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
             public: true,
             label: "Hotfolder Path",
-            description: "Please restart Joplin after a change.",
           }
         );
 
@@ -95,12 +95,17 @@ joplin.plugins.register({
             section: "hotfolderSection",
             public: true,
             label: "Numer of Hotfolders",
-            description: "Sections appear on the left after a restart.",
+            description: "Sections appear on the left (Please restart Joplin after a change).",
           });
         }
         hotfolderNr++;
       } while (hotfolderNr < (await joplin.settings.value("hotfolderAnz")));
     }
+
+    joplin.settings.onChange(async (event:any) => {
+      console.log("Settings changed")
+      await registerHotfolder();
+    });
 
     await registerHotfolderSettings();
     await registerHotfolder();
@@ -255,12 +260,25 @@ joplin.plugins.register({
 
     async function registerHotfolder() {
       const hotfolderAnz = await joplin.settings.value("hotfolderAnz");
+
+      if(watchers.length > 0) {
+        for(let watcher of watchers){
+          watcher.close().then(() => console.log('Hotfolder closed'));
+        }
+        watchers = [];
+      }
+
       for (let hotfolderNr = 0; hotfolderNr < hotfolderAnz; hotfolderNr++) {
-        let hotfolderPath = await joplin.settings.value(
-          "hotfolderPath" + (hotfolderNr == 0 ? "" : hotfolderNr)
-        );
+        let hotfolderPath = ""
+        try {
+          hotfolderPath = await joplin.settings.value(
+            "hotfolderPath" + (hotfolderNr == 0 ? "" : hotfolderNr)
+          );
+        } catch (e) {
+        }
+
         if (hotfolderPath.trim() != "") {
-          chokidar
+          let hotfolderWatcher = chokidar
             .watch(hotfolderPath, {
               ignored: /(^|[\/\\])\..|\.lock$/, // ignore dotfiles and *.lock
               persistent: true,
@@ -275,6 +293,7 @@ joplin.plugins.register({
               console.log("File", path, "has been added");
               processFile(path, hotfolderNr == 0 ? "" : hotfolderNr.toString());
             });
+          watchers.push(hotfolderWatcher);
         }
       }
     }
