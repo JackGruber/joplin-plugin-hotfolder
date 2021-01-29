@@ -128,7 +128,7 @@ joplin.plugins.register({
         const importNotebook = await joplin.settings.value(
           "importNotebook" + hotfolderNr
         );
-        let notebookId = await getNotebookId(importNotebook);
+        let notebookId = await getNotebookId(importNotebook, false);
         if (notebookId == null) {
           notebookId = selectedFolder.id;
         }
@@ -242,20 +242,42 @@ joplin.plugins.register({
       }
     }
 
-    async function getNotebookId(notebookName: string): Promise<string> {
-      let pageNum = 1;
-      do {
-        var folders = await joplin.data.get(["folders"], {
-          fields: "id,title",
-          limit: 50,
-          page: pageNum++,
-        });
-        for (const folder of folders.items) {
-          if (notebookName == folder.title) {
-            return folder.id;
+    // Get NotebookID
+    // notebookName = Notebookname / Notebookpath
+    // parent_id = parent NotebookId, empty string = Toplevel Notebook, false = search Notebook from Path
+    async function getNotebookId(
+      notebookName: string,
+      parent_id: any
+    ): Promise<string> {
+      console.log(notebookName + " => " + parent_id);
+      if (parent_id !== false) {
+        let pageNum = 1;
+        do {
+          var folders = await joplin.data.get(["folders"], {
+            fields: "id,title,parent_id",
+            limit: 50,
+            page: pageNum++,
+          });
+          console.log(folders);
+          for (const folder of folders.items) {
+            if (notebookName == folder.title && parent_id == folder.parent_id) {
+              return folder.id;
+            }
           }
+        } while (folders.has_more);
+      } else {
+        if (notebookName.indexOf("\\") !== -1) {
+          const notebookPath = notebookName.split("\\");
+          let notebookId = "";
+          for (let subNotebook of notebookPath) {
+            notebookId = await getNotebookId(subNotebook, notebookId);
+          }
+          return notebookId;
+        } else {
+          return getNotebookId(notebookName, "");
         }
-      } while (folders.has_more);
+      }
+
       return null;
     }
 

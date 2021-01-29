@@ -4,6 +4,7 @@
 
 - Add: Option for multiple Hotfolders
 - Optimize: Update settings on change without Joplin reload
+- Optimize: Define Subnotebooks
 
 ## v0.2.0 (2021-01-27)
 
