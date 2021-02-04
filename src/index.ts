@@ -249,7 +249,6 @@ joplin.plugins.register({
       notebookName: string,
       parent_id: any
     ): Promise<string> {
-      console.log(notebookName + " => " + parent_id);
       if (parent_id !== false) {
         let pageNum = 1;
         do {
@@ -258,7 +257,6 @@ joplin.plugins.register({
             limit: 50,
             page: pageNum++,
           });
-          console.log(folders);
           for (const folder of folders.items) {
             if (notebookName == folder.title && parent_id == folder.parent_id) {
               return folder.id;
