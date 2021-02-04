@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.3.1 (2021-01-29)
+
+Fix: Folder with a beginning dot is excluded #5
+
 ## v0.3.0 (2021-01-29)
 
 - Add: Option for multiple Hotfolders
