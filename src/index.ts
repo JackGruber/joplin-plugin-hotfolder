@@ -300,7 +300,6 @@ joplin.plugins.register({
         if (hotfolderPath.trim() != "") {
           let hotfolderWatcher = chokidar
             .watch(hotfolderPath, {
-              ignored: /(^|[\/\\])\..|\.lock$/, // ignore dotfiles and *.lock
               persistent: true,
               awaitWriteFinish: true,
               depth: 0,
