@@ -6,7 +6,7 @@
 	"name": "Hotfolder",
 	"description": "Monitors a locale folder and import the files as a new note.",
 	"author": "JackGruber",
-	"homepage_url": "https://github.com/JackGruber/joplin-plugin-hotfolder",
+	"homepage_url": "https://github.com/JackGruber/joplin-plugin-hotfolder/blob/master/README.md",
 	"repository_url": "https://github.com/JackGruber/joplin-plugin-hotfolder",
 	"keywords": ["hotfolder", "import", "monitor"]
 }
