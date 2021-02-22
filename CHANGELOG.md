@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.3.2 (2021-02-22)
+
+Fix: File is not deleted on tagging error
+
 ## v0.3.1 (2021-01-29)
 
 Fix: Folder with a beginning dot is excluded #5

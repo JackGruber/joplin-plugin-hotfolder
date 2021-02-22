@@ -205,9 +205,16 @@ joplin.plugins.register({
         if (addTags != null) {
           for (let tag of addTags) {
             let tagId = await getTagId(tag);
-            await joplin.data.post(["tags", tagId, "notes"], null, {
-              id: newNote.id,
-            });
+            if(tagId != null) {
+              try {
+                await joplin.data.post(["tags", tagId, "notes"], null, {
+                  id: newNote.id,
+                });
+              } catch (e) {
+                console.error("note tagging error");
+                console.error(e);
+              }
+            }
           }
         }
 
@@ -223,6 +230,7 @@ joplin.plugins.register({
     }
 
     async function getTagId(tag: string): Promise<string> {
+      tag = tag.trim();
       var query = await joplin.data.get(["search"], {
         query: tag,
         type: "tag",
@@ -239,6 +247,7 @@ joplin.plugins.register({
       } else {
         console.error("More than one tag match!");
         console.error(query);
+        return null;
       }
     }
 
