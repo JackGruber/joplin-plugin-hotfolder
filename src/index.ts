@@ -94,7 +94,7 @@ joplin.plugins.register({
             type: SettingItemType.Int,
             section: "hotfolderSection",
             public: true,
-            label: "Numer of Hotfolders",
+            label: "Number of Hotfolders",
             description:
               "Sections appear on the left (Please restart Joplin after a change).",
           });
