@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.3.3 (2021-03-16)
+
+- Fix: typo
+
 ## v0.3.2 (2021-02-22)
 
 Fix: File is not deleted on tagging error
