@@ -26,6 +26,7 @@ First configure the Plugin under `Tools > Options > Hotfolder`!
 
 Each newly created file in the hotfolder is automatically created as a new note.
 The files are added as attachments unless the file extension is defined as `Add as text`.
+After processing the file are deleted from the hotfolder.
 
 ## Options
 
