@@ -201,7 +201,7 @@ joplin.plugins.register({
           });
         }
 
-        tagNote(newNote.id, addTags);
+        await tagNote(newNote.id, addTags);
 
         try {
           fs.removeSync(file);
