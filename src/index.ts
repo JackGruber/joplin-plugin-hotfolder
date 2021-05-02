@@ -201,22 +201,7 @@ joplin.plugins.register({
           });
         }
 
-        // Tag Note
-        if (addTags != null) {
-          for (let tag of addTags) {
-            let tagId = await getTagId(tag);
-            if(tagId != null) {
-              try {
-                await joplin.data.post(["tags", tagId, "notes"], null, {
-                  id: newNote.id,
-                });
-              } catch (e) {
-                console.error("note tagging error");
-                console.error(e);
-              }
-            }
-          }
-        }
+        tagNote(newNote.id, addTags);
 
         try {
           fs.removeSync(file);
@@ -227,6 +212,24 @@ joplin.plugins.register({
       } else {
         console.info("File is ignored!");
       }
+    }
+
+    async function tagNote(noteId: string, addTags: Array<string>) {
+        if (addTags != null) {
+          for (let tag of addTags) {
+            let tagId = await getTagId(tag);
+            if(tagId != null) {
+              try {
+                await joplin.data.post(["tags", tagId, "notes"], null, {
+                  id: noteId,
+                });
+              } catch (e) {
+                console.error("note tagging error");
+                console.error(e);
+              }
+            }
+          }
+        }
     }
 
     async function getTagId(tag: string): Promise<string> {
