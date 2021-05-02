@@ -116,10 +116,7 @@ joplin.plugins.register({
         "ignoreFiles" + hotfolderNr
       );
 
-      if (
-        !fs.existsSync(file + ".lock") &&
-        ignoreFiles.split(/\s*,\s*/).indexOf(path.basename(file)) === -1
-      ) {
+      if (ignoreFiles.split(/\s*,\s*/).indexOf(path.basename(file)) === -1) {
         const extensionsAddAsText = await joplin.settings.value(
           "extensionsAddAsText" + hotfolderNr
         );
