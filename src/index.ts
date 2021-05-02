@@ -171,7 +171,7 @@ joplin.plugins.register({
         } else {
           console.info("Import as attachment");
           newResources = await createResources(file, fileName);
-          if(newResources) {
+          if (newResources) {
             newBody = "[" + fileName + "](:/" + newResources.id + ")";
             if (
               mimeType !== undefined &&
@@ -201,7 +201,10 @@ joplin.plugins.register({
       }
     }
 
-    async function createResources(file: string, fileName: string): Promise<string> {
+    async function createResources(
+      file: string,
+      fileName: string
+    ): Promise<string> {
       try {
         let newResources = await joplin.data.post(
           ["resources"],
@@ -213,7 +216,7 @@ joplin.plugins.register({
             },
           ]
         );
-        return newResources
+        return newResources;
       } catch (e) {
         console.error("Error on create resources");
         console.error(e);
@@ -222,21 +225,21 @@ joplin.plugins.register({
     }
 
     async function tagNote(noteId: string, addTags: Array<string>) {
-        if (addTags != null) {
-          for (let tag of addTags) {
-            let tagId = await getTagId(tag);
-            if(tagId != null) {
-              try {
-                await joplin.data.post(["tags", tagId, "notes"], null, {
-                  id: noteId,
-                });
-              } catch (e) {
-                console.error("note tagging error");
-                console.error(e);
-              }
+      if (addTags != null) {
+        for (let tag of addTags) {
+          let tagId = await getTagId(tag);
+          if (tagId != null) {
+            try {
+              await joplin.data.post(["tags", tagId, "notes"], null, {
+                id: noteId,
+              });
+            } catch (e) {
+              console.error("note tagging error");
+              console.error(e);
             }
           }
         }
+      }
     }
 
     async function getTagId(tag: string): Promise<string> {
