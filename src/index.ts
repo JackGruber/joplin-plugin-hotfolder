@@ -170,35 +170,22 @@ joplin.plugins.register({
           });
         } else {
           console.info("Import as attachment");
-          try {
-            newResources = await joplin.data.post(
-              ["resources"],
-              null,
-              { title: fileName },
-              [
-                {
-                  path: file, // Actual file
-                },
-              ]
-            );
-          } catch (e) {
-            console.error("Error on create resources");
-            console.error(e);
-            return;
-          }
-          newBody = "[" + fileName + "](:/" + newResources.id + ")";
-          if (
-            mimeType !== undefined &&
-            mimeType.mime.split("/")[0] === "image"
-          ) {
-            newBody = "!" + newBody;
-          }
+          newResources = await createResources(file, fileName);
+          if(newResources) {
+            newBody = "[" + fileName + "](:/" + newResources.id + ")";
+            if (
+              mimeType !== undefined &&
+              mimeType.mime.split("/")[0] === "image"
+            ) {
+              newBody = "!" + newBody;
+            }
 
-          newNote = await joplin.data.post(["notes"], null, {
-            body: newBody,
-            title: fileName,
-            parent_id: notebookId,
-          });
+            newNote = await joplin.data.post(["notes"], null, {
+              body: newBody,
+              title: fileName,
+              parent_id: notebookId,
+            });
+          }
         }
 
         await tagNote(newNote.id, addTags);
@@ -211,6 +198,26 @@ joplin.plugins.register({
         }
       } else {
         console.info("File is ignored!");
+      }
+    }
+
+    async function createResources(file: string, fileName: string): Promise<string> {
+      try {
+        let newResources = await joplin.data.post(
+          ["resources"],
+          null,
+          { title: fileName },
+          [
+            {
+              path: file,
+            },
+          ]
+        );
+        return newResources
+      } catch (e) {
+        console.error("Error on create resources");
+        console.error(e);
+        return null;
       }
     }
 
