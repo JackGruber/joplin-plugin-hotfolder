@@ -9,8 +9,7 @@ export default class filePattern {
   static async match(file: string, pattern: string): Promise<number> {
     let regExp = null;
     let regExpStr = null;
-    console.log(pattern)
-    console.log(file)
+    
     // pattern1, pattern2, pattern3, ...
     let matchPatterns = pattern.split(/\s*,\s*/);
     for (let check of matchPatterns) {
