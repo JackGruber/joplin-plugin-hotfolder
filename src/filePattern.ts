@@ -1,5 +1,5 @@
 export default class filePattern {
-    static async escapeRegExp(str: string): Promise<string> {
+  static async escapeRegExp(str: string): Promise<string> {
     return str.replace(
       /((?<!\\)\\(?![\*\\])|(?<!\\)\*|[-[\]{}()+!<=:?.\/^$|#,])/g,
       "\\$&"
@@ -9,13 +9,13 @@ export default class filePattern {
   static async match(file: string, pattern: string): Promise<number> {
     let regExp = null;
     let regExpStr = null;
-    
+
     // pattern1, pattern2, pattern3, ...
     let matchPatterns = pattern.split(/\s*,\s*/);
     for (let check of matchPatterns) {
-      if(pattern !== ""){
+      if (pattern !== "") {
         // Dot file filter
-        if(check === ".*" && file.match(/^\..*$/)) return 1
+        if (check === ".*" && file.match(/^\..*$/)) return 1;
 
         // Text match (RegEx escaped)
         regExpStr = await this.escapeRegExp(check);
