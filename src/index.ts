@@ -1,6 +1,6 @@
 import joplin from "api";
 import { SettingItemType } from "api/types";
-import filePattern from './filePattern';
+import filePattern from "./filePattern";
 
 const chokidar = require("chokidar");
 const fs = require("fs-extra");
