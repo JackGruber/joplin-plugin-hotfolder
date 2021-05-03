@@ -13,25 +13,27 @@ export default class filePattern {
     // pattern1, pattern2, pattern3, ...
     let matchPatterns = pattern.split(/\s*,\s*/);
     for (let check of matchPatterns) {
-      // Dot file filter
-      if(check === ".*" && file.match(/^\..*$/)) return 1
+      if(pattern !== ""){
+        // Dot file filter
+        if(check === ".*" && file.match(/^\..*$/)) return 1
 
-      // Text match (RegEx escaped)
-      regExpStr = await this.escapeRegExp(check);
-      regExp = await this.getRegExp("^" + regExpStr + "$");
-      if (file.match(regExp)) return 2;
+        // Text match (RegEx escaped)
+        regExpStr = await this.escapeRegExp(check);
+        regExp = await this.getRegExp("^" + regExpStr + "$");
+        if (file.match(regExp)) return 2;
 
-      // Wildcard match (RegEx escaped, but * converted to .*)
-      regExpStr = check.replace(/(?<!\\)\*/g, "µWILDCARDµ");
-      regExpStr = await this.escapeRegExp(regExpStr);
-      regExpStr = regExpStr.replace(/µWILDCARDµ/g, ".*");
-      regExp = await this.getRegExp("^" + regExpStr + "$");
-      if (file.match(regExp)) return 3;
+        // Wildcard match (RegEx escaped, but * converted to .*)
+        regExpStr = check.replace(/(?<!\\)\*/g, "µWILDCARDµ");
+        regExpStr = await this.escapeRegExp(regExpStr);
+        regExpStr = regExpStr.replace(/µWILDCARDµ/g, ".*");
+        regExp = await this.getRegExp("^" + regExpStr + "$");
+        if (file.match(regExp)) return 3;
+      }
     }
 
     // Full RegEx
     regExp = await this.getRegExp(pattern);
-    if (pattern !== ".*" && file.match(regExp)) return 4;
+    if (pattern !== "" && pattern !== ".*" && file.match(regExp)) return 4;
 
     return 0;
   }

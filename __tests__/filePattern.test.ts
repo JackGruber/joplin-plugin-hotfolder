@@ -96,6 +96,14 @@ describe("Match with RegExp patterns in name and wildcards", function () {
   });
 });
 
+describe("Empty filter", function () {
+  const filter = "";
+
+  it(`should not match: test.log`, async () => {
+    expect(await filePattern.match(`test.log`, filter)).toBe(0);
+  });
+});
+
 describe("Match RegEx", function () {
   const filter = "(.*\\.log|^\\..*$)";
 
