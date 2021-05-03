@@ -35,7 +35,7 @@ Go to `Tools > Options > Backup`
 | Option | Description | Default |
 | --- | --- | --- |
 | Hotfolder Path | Files from this path will be imported as new notes. | |
-| Ignore Files | Comma separated list of files to be ignored. | |
+| Ignore Files | Comma separated list of files to be ignored.<br>Wildcards (`*`) or RegExp possible.<br>To ignore a file with a `*` in the name, escape the `*` with a `\`, example: `test\*file.log` | |
 | Add as text | Files with this file extension are imported as text and not as attachment. | .txt, .md |
 | Notebook | In which notebook should the note be created. <br> Subnotebooks can be defined via `Project\Scans`. | Current selected Notebook |
 | Tag | Comma separated list of tags to be added to the note. | |

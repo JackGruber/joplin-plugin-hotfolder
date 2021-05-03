@@ -1,5 +1,6 @@
 import joplin from "api";
 import { SettingItemType } from "api/types";
+import filePattern from './filePattern';
 
 const chokidar = require("chokidar");
 const fs = require("fs-extra");
@@ -115,8 +116,10 @@ joplin.plugins.register({
       const ignoreFiles = await joplin.settings.value(
         "ignoreFiles" + hotfolderNr
       );
+      const fileName = path.basename(file);
+      let ignoreFileUser = await filePattern.match(fileName, ignoreFiles);
 
-      if (ignoreFiles.split(/\s*,\s*/).indexOf(path.basename(file)) === -1) {
+      if (ignoreFileUser === 0) {
         const extensionsAddAsText = await joplin.settings.value(
           "extensionsAddAsText" + hotfolderNr
         );
@@ -140,7 +143,6 @@ joplin.plugins.register({
 
         const mimeType = await fileType.fromFile(file);
         const fileExt = path.extname(file);
-        const fileName = path.basename(file);
         let newNote = null;
         let fileBuffer = null;
         let newResources = null;
@@ -194,7 +196,7 @@ joplin.plugins.register({
           return;
         }
       } else {
-        console.info("File is ignored!");
+        console.info("File is ignored! ignoreFileUser: " + ignoreFileUser);
       }
     }
 
