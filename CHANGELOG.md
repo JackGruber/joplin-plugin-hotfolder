@@ -1,5 +1,9 @@
 # Changelog
 
+## not released
+
+- Add: Wildcard and RegExp match for `Ignore Files`
+
 ## v0.3.3 (2021-03-16)
 
 - Fix: typo
