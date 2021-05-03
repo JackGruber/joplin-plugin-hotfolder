@@ -1,11 +1,11 @@
 import joplin from "api";
 import { SettingItemType } from "api/types";
 import filePattern from "./filePattern";
+import * as chokidar from "chokidar";
+import * as path from "path";
+import * as fileType from "file-type";
+import fs from "fs-extra";
 
-const chokidar = require("chokidar");
-const fs = require("fs-extra");
-const fileType = require("file-type");
-const path = require("path");
 let watchers = [];
 
 joplin.plugins.register({
