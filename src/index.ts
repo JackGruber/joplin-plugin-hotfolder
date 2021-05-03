@@ -39,7 +39,7 @@ joplin.plugins.register({
         await joplin.settings.registerSetting(
           "ignoreFiles" + (hotfolderNr == 0 ? "" : hotfolderNr),
           {
-            value: "",
+            value: ".*",
             type: SettingItemType.String,
             section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
             public: true,
