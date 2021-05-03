@@ -147,6 +147,7 @@ joplin.plugins.register({
         let fileBuffer = null;
         let newResources = null;
         let newBody = null;
+        let noteTitle = fileName.replace(fileExt, "");
 
         if (
           extensionsAddAsText
@@ -164,7 +165,7 @@ joplin.plugins.register({
           }
           newNote = await joplin.data.post(["notes"], null, {
             body: fileBuffer.toString(),
-            title: fileName,
+            title: noteTitle,
             parent_id: notebookId,
           });
         } else {
@@ -181,7 +182,7 @@ joplin.plugins.register({
 
             newNote = await joplin.data.post(["notes"], null, {
               body: newBody,
-              title: fileName,
+              title: noteTitle,
               parent_id: notebookId,
             });
           }
