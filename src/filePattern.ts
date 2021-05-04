@@ -1,12 +1,13 @@
-export default class filePattern {
-  static async escapeRegExp(str: string): Promise<string> {
+export namespace filePattern {
+
+  export async function escapeRegExp(str: string): Promise<string> {
     return str.replace(
       /((?<!\\)\\(?![\*\\])|(?<!\\)\*|[-[\]{}()+!<=:?.\/^$|#,])/g,
       "\\$&"
     );
   }
 
-  static async match(file: string, pattern: string): Promise<number> {
+  export async function match(file: string, pattern: string): Promise<number> {
     let regExp = null;
     let regExpStr = null;
 
@@ -38,7 +39,7 @@ export default class filePattern {
     return 0;
   }
 
-  static async getRegExp(str: string): Promise<RegExp> {
+  export async function getRegExp(str: string): Promise<RegExp> {
     try {
       let regExp = new RegExp(str, "i");
       if (regExp == undefined) regExp = null;

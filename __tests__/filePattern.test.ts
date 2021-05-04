@@ -1,4 +1,4 @@
-import filePattern from "../src/filePattern";
+import { filePattern } from "../src/filePattern";
 
 describe("Match files", function () {
   const filter = "test.txt, test.md, test test.md, te\\*st.md";

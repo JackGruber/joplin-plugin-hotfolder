@@ -1,6 +1,6 @@
 import joplin from "api";
 import * as chokidar from "chokidar";
-import filePattern from "./filePattern";
+import { filePattern } from "./filePattern";
 import * as path from "path";
 import * as fileType from "file-type";
 import { helper } from "./helper";
