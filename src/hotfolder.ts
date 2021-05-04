@@ -69,18 +69,7 @@ export namespace hotfolder {
           .indexOf(fileExt) !== -1
       ) {
         console.info("Import as Text");
-        try {
-          fileBuffer = fs.readFileSync(file);
-        } catch (e) {
-          console.error("Error on readFileSync");
-          console.error(e);
-          return;
-        }
-        newNote = await joplin.data.post(["notes"], null, {
-          body: fileBuffer.toString(),
-          title: noteTitle,
-          parent_id: notebookId,
-        });
+        newNote = hotfolder.importAsText(file, noteTitle, hotfolderSettings.notebookId);
       } else {
         console.info("Import as attachment");
         newResources = await helper.createResources(file, fileName);
@@ -112,5 +101,21 @@ export namespace hotfolder {
     } else {
       console.info("File is ignored! ignoreFileUser: " + ignoreFileUser);
     }
+  }
+
+  export async function importAsText(file: string, noteTitle: string, folder: string): Promise<any> {
+    let fileBuffer = null; 
+    try {
+      fileBuffer = fs.readFileSync(file);
+    } catch (e) {
+      console.error("Error on readFileSync");
+      console.error(e);
+      return;
+    }
+    return await joplin.data.post(["notes"], null, {
+      body: fileBuffer.toString(),
+      title: noteTitle,
+      parent_id: folder,
+    });
   }
 }
