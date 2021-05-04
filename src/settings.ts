@@ -1,8 +1,8 @@
 import joplin from "api";
 import { SettingItemType } from "api/types";
 
-export default class settings {
-  static async registerHotfolderSettings() {
+export namespace settings {
+  export async function register() {
     let hotfolderNr = 0;
     do {
       await joplin.settings.registerSection(

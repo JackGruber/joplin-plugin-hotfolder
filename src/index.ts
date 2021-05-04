@@ -1,12 +1,5 @@
 import joplin from "api";
-import filePattern from "./filePattern";
-import settings from "./settings";
-
-const chokidar = require("chokidar");
-const fs = require("fs-extra");
-const fileType = require("file-type");
-const path = require("path");
-let watchers = [];
+import { settings } from "./settings";
 
 joplin.plugins.register({
   onStart: async function () {
