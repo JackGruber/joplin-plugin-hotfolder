@@ -72,15 +72,8 @@ export namespace hotfolder {
         newNote = hotfolder.importAsText(file, noteTitle, hotfolderSettings.notebookId);
       } else {
         console.info("Import as attachment");
-        newResources = await helper.createResources(file, fileName);
-        if (newResources) {
-          newBody = "[" + fileName + "](:/" + newResources.id + ")";
-          if (
-            mimeType !== undefined &&
-            mimeType.mime.split("/")[0] === "image"
-          ) {
-            newBody = "!" + newBody;
-          }
+        newNote = await hotfolder.importAsAttachment(file, noteTitle, hotfolderSettings.notebookId);
+      }
 
       await helper.tagNote(newNote.id, hotfolderSettings.importTags);
 
@@ -110,7 +103,31 @@ export namespace hotfolder {
       parent_id: folder,
     });
   }
-}
+
+  export async function importAsAttachment(
+    file: string,
+    noteTitle: string,
+    noteFolder: string
+  ): Promise<any> {
+    const mimeType = await fileType.fromFile(file);
+    const fileName = path.basename(file);
+
+    let resource = await hotfolder.createResources(file, fileName);
+    let newBody = null;
+    if (resource.id) {
+      newBody = "[" + fileName + "](:/" + resource.id + ")";
+      if (mimeType !== undefined && mimeType.mime.split("/")[0] === "image") {
+        newBody = "!" + newBody;
+      }
+
+      return await joplin.data.post(["notes"], null, {
+        body: newBody,
+        title: noteTitle,
+        parent_id: noteFolder,
+      });
+    }
+  }
+
   export async function createResources(
     file: string,
     fileName: string
@@ -132,3 +149,4 @@ export namespace hotfolder {
       return null;
     }
   }
+}
