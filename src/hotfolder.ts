@@ -77,7 +77,7 @@ export namespace hotfolder {
           .indexOf(fileExt) !== -1
       ) {
         console.info("Import as Text");
-        newNote = hotfolder.importAsText(
+        newNote = await hotfolder.importAsText(
           file,
           noteTitle,
           hotfolderSettings.notebookId
