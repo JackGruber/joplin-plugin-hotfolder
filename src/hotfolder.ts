@@ -4,6 +4,7 @@ import { filePattern } from "./filePattern";
 import * as path from "path";
 import * as fileType from "file-type";
 import { helper } from "./helper";
+import { hotfolderSettings, settings } from "./settings";
 
 const fs = require("fs-extra")
 
@@ -49,44 +50,20 @@ export namespace hotfolder {
   }
 
   export async function processFile(file: string, hotfolderNr: string) {
-    const ignoreFiles = await joplin.settings.value(
-      "ignoreFiles" + hotfolderNr
-    );
+    const hotfolderSettings: hotfolderSettings = await settings.getHotfolder(hotfolderNr);
     const fileName = path.basename(file);
-    let ignoreFileUser = await filePattern.match(fileName, ignoreFiles);
+    const ignoreFileUser = await filePattern.match(fileName, hotfolderSettings.ignoreFiles);
 
     if (ignoreFileUser === 0) {
-      const extensionsAddAsText = await joplin.settings.value(
-        "extensionsAddAsText" + hotfolderNr
-      );
-
-      const selectedFolder = await joplin.workspace.selectedFolder();
-      const importNotebook = await joplin.settings.value(
-        "importNotebook" + hotfolderNr
-      );
-      let notebookId = await helper.getNotebookId(importNotebook, false);
-      if (notebookId == null) {
-        notebookId = selectedFolder.id;
-      }
-
-      const importTags = await joplin.settings.value(
-        "importTags" + hotfolderNr
-      );
-      let addTags = null;
-      if (importTags.trim() !== "") {
-        addTags = importTags.split(/\s*,\s*/);
-      }
-
       const mimeType = await fileType.fromFile(file);
       const fileExt = path.extname(file);
       let newNote = null;
-      let fileBuffer = null;
       let newResources = null;
       let newBody = null;
       let noteTitle = fileName.replace(fileExt, "");
 
       if (
-        extensionsAddAsText
+        hotfolderSettings.extensionsAddAsText
           .toLowerCase()
           .split(/\s*,\s*/)
           .indexOf(fileExt) !== -1

@@ -1,5 +1,14 @@
 import joplin from "api";
 import { SettingItemType } from "api/types";
+import { helper } from "./helper";
+
+export interface hotfolderSettings {
+  notebookId: string;
+  extensionsAddAsText: string;
+  ignoreFiles: string;
+  importTags: string;
+}
+
 
 export namespace settings {
   export async function register() {
@@ -91,5 +100,30 @@ export namespace settings {
       }
       hotfolderNr++;
     } while (hotfolderNr < (await joplin.settings.value("hotfolderAnz")));
+  }
+
+  export async function getHotfolder(hotfolderNr: string): Promise<hotfolderSettings> {
+    const ignoreFiles = await joplin.settings.value(
+      "ignoreFiles" + hotfolderNr
+    );
+
+    const extensionsAddAsText = await joplin.settings.value(
+      "extensionsAddAsText" + hotfolderNr
+    );    
+
+    const selectedFolder = await joplin.workspace.selectedFolder();
+    const importNotebook = await joplin.settings.value(
+      "importNotebook" + hotfolderNr
+    );
+    let notebookId = await helper.getNotebookId(importNotebook, false);
+    if (notebookId == null) {
+      notebookId = selectedFolder.id;
+    }
+
+    const importTags = await joplin.settings.value(
+      "importTags" + hotfolderNr
+    );
+
+    return {notebookId: notebookId, importTags: importTags, extensionsAddAsText: extensionsAddAsText, ignoreFiles: ignoreFiles}
   }
 }
