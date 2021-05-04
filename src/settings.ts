@@ -7,6 +7,7 @@ export interface hotfolderSettings {
   extensionsAddAsText: string;
   ignoreFiles: string;
   importTags: string;
+  action: string;
 }
 
 export namespace settings {
@@ -33,6 +34,19 @@ export namespace settings {
           label: "Hotfolder Path",
         }
       );
+
+      await joplin.settings.registerSetting("hotfolderAction" + (hotfolderNr == 0 ? "" : hotfolderNr), {
+        value: "import",
+        type: SettingItemType.String,
+        section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
+        isEnum: true,
+        public: true,
+        label: "Logfile",
+        options: {
+          import: "Import as new note",
+          update: "Update note / attachment in note",
+        },
+      });
 
       await joplin.settings.registerSetting(
         "ignoreFiles" + (hotfolderNr == 0 ? "" : hotfolderNr),
@@ -122,12 +136,14 @@ export namespace settings {
     }
 
     const importTags = await joplin.settings.value("importTags" + hotfolderNr);
+    const hotfolderAction = await joplin.settings.value("hotfolderAction" + hotfolderNr);
 
     return {
       notebookId: notebookId,
       importTags: importTags,
       extensionsAddAsText: extensionsAddAsText,
       ignoreFiles: ignoreFiles,
+      action: hotfolderAction
     };
   }
 }

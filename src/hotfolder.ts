@@ -29,6 +29,10 @@ export namespace hotfolder {
         );
       } catch (e) {}
 
+      let hotfolderAction = await joplin.settings.value(
+        "hotfolderAction" + (hotfolderNr == 0 ? "" : hotfolderNr)
+      );
+
       if (hotfolderPath.trim() != "") {
         let hotfolderWatcher = chokidar
           .watch(hotfolderPath, {
@@ -39,6 +43,15 @@ export namespace hotfolder {
           })
           .on("ready", function () {
             console.log("Newly watched hotfolder path:", this.getWatched());
+          })
+          .on("change", function (path) {
+            if (hotfolderAction == "update") {
+              console.log("File", path, "has been changed");
+              hotfolder.processFile(
+                path,
+                hotfolderNr == 0 ? "" : hotfolderNr.toString()
+              );
+            }
           })
           .on("add", function (path) {
             console.log("File", path, "has been added");
@@ -61,46 +74,139 @@ export namespace hotfolder {
       fileName,
       hotfolderSettings.ignoreFiles
     );
+    const ignorePluginFiles = await filePattern.match(fileName, "*.jhf");
 
-    if (ignoreFileUser === 0) {
-      const mimeType = await fileType.fromFile(file);
+    if (ignoreFileUser === 0 && ignorePluginFiles === 0) {
       const fileExt = path.extname(file);
-      let newNote = null;
-      let newResources = null;
-      let newBody = null;
+      let note = null;
+      let jhf = {};
       let noteTitle = fileName.replace(fileExt, "");
+      const importAsText = hotfolderSettings.extensionsAddAsText
+        .toLowerCase()
+        .split(/\s*,\s*/)
+        .indexOf(fileExt);
 
-      if (
-        hotfolderSettings.extensionsAddAsText
-          .toLowerCase()
-          .split(/\s*,\s*/)
-          .indexOf(fileExt) !== -1
-      ) {
-        console.info("Import as Text");
-        newNote = await hotfolder.importAsText(
-          file,
-          noteTitle,
-          hotfolderSettings.notebookId
-        );
+      if (hotfolderSettings.action == "update") {
+        if (importAsText !== -1) {
+          console.info("Update note text");
+          if (fs.existsSync(file + ".jhf")) {
+            await hotfolder.updateText(file);
+          } else {
+            note = await hotfolder.importAsText(
+              file,
+              noteTitle,
+              hotfolderSettings.notebookId
+            );
+            jhf["noteid"] = note.id;
+            jhf["lastupdate"] = new Date().getTime();
+            await hotfolder.writeJHF(file, jhf);
+          }
+        } else {
+          console.info("Update resource in note");
+        }
+      } else if (hotfolderSettings.action == "import") {
+        if (importAsText !== -1) {
+          console.info("Import as Text");
+          note = await hotfolder.importAsText(
+            file,
+            noteTitle,
+            hotfolderSettings.notebookId
+          );
+        } else {
+          console.info("Import as attachment");
+          note = await hotfolder.importAsAttachment(
+            file,
+            noteTitle,
+            hotfolderSettings.notebookId
+          );
+        }
+
+        await helper.tagNote(note.id, hotfolderSettings.importTags);
+
+        try {
+          fs.removeSync(file);
+        } catch (e) {
+          console.error(e);
+          return;
+        }
       } else {
-        console.info("Import as attachment");
-        newNote = await hotfolder.importAsAttachment(
-          file,
-          noteTitle,
-          hotfolderSettings.notebookId
+        console.log(
+          "Hotfolder action: '" + hotfolderSettings.action + " not defined"
         );
-      }
-
-      await helper.tagNote(newNote.id, hotfolderSettings.importTags);
-
-      try {
-        fs.removeSync(file);
-      } catch (e) {
-        console.error(e);
         return;
       }
     } else {
-      console.info("File is ignored! ignoreFileUser: " + ignoreFileUser);
+      console.info(
+        "File is ignored! ignoreFileUser: " +
+          ignoreFileUser +
+          " ignorePluginFiles: " +
+          ignorePluginFiles
+      );
+    }
+  }
+
+  export async function updateText(file: string) {
+    let info = null;
+    let fileBuffer = null;
+
+    if (fs.existsSync(file)) {
+      info = await hotfolder.getJHF(file);
+      if (info === null) return false;
+      let filestat = fs.statSync(file);
+
+      if (
+        info.lastupdate === undefined ||
+        info.lastupdate < filestat.ctime.getTime()
+      ) {
+        console.log("Updateing");
+        fileBuffer = await hotfolder.readContent(file);
+        await joplin.data.put(["notes", info.noteid], null, {
+          body: fileBuffer.toString(),
+        });
+        info["lastupdate"] = new Date().getTime();
+        await hotfolder.writeJHF(file, info);
+      }
+    }
+  }
+
+  export async function writeJHF(file: string, data: any) {
+    file = file + ".jhf";
+    try {
+      fs.writeFileSync(file, JSON.stringify(data), "utf8");
+    } catch (e) {}
+  }
+
+  export async function getJHF(file: string): Promise<JSON> {
+    file = file + ".jhf";
+    if (fs.existsSync(file)) {
+      let data = null;
+      try {
+        data = fs.readFileSync(file, "utf8");
+      } catch (e) {
+        console.error("Error on readFileSync");
+        console.error(e);
+        return null;
+      }
+
+      try {
+        return JSON.parse(data);
+      } catch (e) {
+        console.error("Json parse error");
+        console.error(e);
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  export async function readContent(file: string): Promise<any> {
+    try {
+      return fs.readFileSync(file);
+    } catch (e) {
+      console.error("Error on readFileSync");
+      console.error(e);
+      return;
     }
   }
 
@@ -109,14 +215,7 @@ export namespace hotfolder {
     noteTitle: string,
     folder: string
   ): Promise<any> {
-    let fileBuffer = null;
-    try {
-      fileBuffer = fs.readFileSync(file);
-    } catch (e) {
-      console.error("Error on readFileSync");
-      console.error(e);
-      return;
-    }
+    const fileBuffer = await hotfolder.readContent(file);
     return await joplin.data.post(["notes"], null, {
       body: fileBuffer.toString(),
       title: noteTitle,
