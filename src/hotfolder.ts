@@ -119,3 +119,24 @@ export namespace hotfolder {
     });
   }
 }
+  export async function createResources(
+    file: string,
+    fileName: string
+  ): Promise<any> {
+    try {
+      return await joplin.data.post(
+        ["resources"],
+        null,
+        { title: fileName },
+        [
+          {
+            path: file,
+          },
+        ]
+      );
+    } catch (e) {
+      console.error("Error on create resources");
+      console.error(e);
+      return null;
+    }
+  }
