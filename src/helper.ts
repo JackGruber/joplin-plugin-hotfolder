@@ -1,29 +1,6 @@
 import joplin from "api";
 
 export namespace helper {
-  export async function createResources(
-    file: string,
-    fileName: string
-  ): Promise<string> {
-    try {
-      let newResources = await joplin.data.post(
-        ["resources"],
-        null,
-        { title: fileName },
-        [
-          {
-            path: file,
-          },
-        ]
-      );
-      return newResources;
-    } catch (e) {
-      console.error("Error on create resources");
-      console.error(e);
-      return null;
-    }
-  }
-
   export async function tagNote(noteId: string, addTags: Array<string>) {
     if (addTags != null) {
       for (let tag of addTags) {
