@@ -1,7 +1,12 @@
 import joplin from "api";
 
 export namespace helper {
-  export async function tagNote(noteId: string, addTags: Array<string>) {
+  export async function tagNote(noteId: string, tags: string) {
+    let addTags = null;
+    if (tags.trim() !== "") {
+      addTags = tags.split(/\s*,\s*/);
+    }
+
     if (addTags != null) {
       for (let tag of addTags) {
         let tagId = await getTagId(tag);

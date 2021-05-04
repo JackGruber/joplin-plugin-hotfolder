@@ -82,15 +82,7 @@ export namespace hotfolder {
             newBody = "!" + newBody;
           }
 
-          newNote = await joplin.data.post(["notes"], null, {
-            body: newBody,
-            title: noteTitle,
-            parent_id: notebookId,
-          });
-        }
-      }
-
-      await helper.tagNote(newNote.id, addTags);
+      await helper.tagNote(newNote.id, hotfolderSettings.importTags);
 
       try {
         fs.removeSync(file);
