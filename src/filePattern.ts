@@ -1,5 +1,4 @@
 export namespace filePattern {
-
   export async function escapeRegExp(str: string): Promise<string> {
     return str.replace(
       /((?<!\\)\\(?![\*\\])|(?<!\\)\*|[-[\]{}()+!<=:?.\/^$|#,])/g,

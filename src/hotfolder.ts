@@ -6,7 +6,7 @@ import * as fileType from "file-type";
 import { helper } from "./helper";
 import { hotfolderSettings, settings } from "./settings";
 
-const fs = require("fs-extra")
+const fs = require("fs-extra");
 
 let watchers = [];
 
@@ -42,7 +42,10 @@ export namespace hotfolder {
           })
           .on("add", function (path) {
             console.log("File", path, "has been added");
-            hotfolder.processFile(path, hotfolderNr == 0 ? "" : hotfolderNr.toString());
+            hotfolder.processFile(
+              path,
+              hotfolderNr == 0 ? "" : hotfolderNr.toString()
+            );
           });
         watchers.push(hotfolderWatcher);
       }
@@ -50,9 +53,14 @@ export namespace hotfolder {
   }
 
   export async function processFile(file: string, hotfolderNr: string) {
-    const hotfolderSettings: hotfolderSettings = await settings.getHotfolder(hotfolderNr);
+    const hotfolderSettings: hotfolderSettings = await settings.getHotfolder(
+      hotfolderNr
+    );
     const fileName = path.basename(file);
-    const ignoreFileUser = await filePattern.match(fileName, hotfolderSettings.ignoreFiles);
+    const ignoreFileUser = await filePattern.match(
+      fileName,
+      hotfolderSettings.ignoreFiles
+    );
 
     if (ignoreFileUser === 0) {
       const mimeType = await fileType.fromFile(file);
@@ -69,10 +77,18 @@ export namespace hotfolder {
           .indexOf(fileExt) !== -1
       ) {
         console.info("Import as Text");
-        newNote = hotfolder.importAsText(file, noteTitle, hotfolderSettings.notebookId);
+        newNote = hotfolder.importAsText(
+          file,
+          noteTitle,
+          hotfolderSettings.notebookId
+        );
       } else {
         console.info("Import as attachment");
-        newNote = await hotfolder.importAsAttachment(file, noteTitle, hotfolderSettings.notebookId);
+        newNote = await hotfolder.importAsAttachment(
+          file,
+          noteTitle,
+          hotfolderSettings.notebookId
+        );
       }
 
       await helper.tagNote(newNote.id, hotfolderSettings.importTags);
@@ -88,8 +104,12 @@ export namespace hotfolder {
     }
   }
 
-  export async function importAsText(file: string, noteTitle: string, folder: string): Promise<any> {
-    let fileBuffer = null; 
+  export async function importAsText(
+    file: string,
+    noteTitle: string,
+    folder: string
+  ): Promise<any> {
+    let fileBuffer = null;
     try {
       fileBuffer = fs.readFileSync(file);
     } catch (e) {
@@ -133,16 +153,11 @@ export namespace hotfolder {
     fileName: string
   ): Promise<any> {
     try {
-      return await joplin.data.post(
-        ["resources"],
-        null,
-        { title: fileName },
-        [
-          {
-            path: file,
-          },
-        ]
-      );
+      return await joplin.data.post(["resources"], null, { title: fileName }, [
+        {
+          path: file,
+        },
+      ]);
     } catch (e) {
       console.error("Error on create resources");
       console.error(e);
