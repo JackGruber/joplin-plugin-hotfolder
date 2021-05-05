@@ -173,6 +173,8 @@ export namespace hotfolder {
         });
         info["lastupdate"] = new Date().getTime();
         await hotfolder.writeJHF(file, info);
+      } else {
+        console.log("File not newer");
       }
     }
   }
