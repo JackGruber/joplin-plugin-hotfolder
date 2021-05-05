@@ -172,7 +172,7 @@ export namespace hotfolder {
   export async function writeJHF(file: string, data: any) {
     file = file + ".jhf";
     try {
-      fs.writeFileSync(file, JSON.stringify(data), "utf8");
+      fs.writeFileSync(file, JSON.stringify(data, null, 4), "utf8");
     } catch (e) {
       console.error("Error on writeFileSync");
       console.error(e);
