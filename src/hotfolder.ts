@@ -145,6 +145,19 @@ export namespace hotfolder {
     }
   }
 
+
+  export async function fileModified(file: string, jhf: any): Promise<boolean>{
+    let filestat = fs.statSync(file);
+    if (
+      jhf['lastupdate'] === undefined ||
+      jhf['lastupdate'] < filestat.ctime.getTime()
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   export async function updateText(file: string) {
     let info = null;
     let fileBuffer = null;
@@ -152,13 +165,8 @@ export namespace hotfolder {
     if (fs.existsSync(file)) {
       info = await hotfolder.getJHF(file);
       if (info === null) return false;
-      let filestat = fs.statSync(file);
 
-      if (
-        info.lastupdate === undefined ||
-        info.lastupdate < filestat.ctime.getTime()
-      ) {
-        console.log("Updateing");
+      if (await hotfolder.fileModified(file, info) === true) {
         fileBuffer = await hotfolder.readContent(file);
         await joplin.data.put(["notes", info.noteid], null, {
           body: fileBuffer.toString(),
