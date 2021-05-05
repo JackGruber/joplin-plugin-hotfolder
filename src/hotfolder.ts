@@ -103,6 +103,20 @@ export namespace hotfolder {
           }
         } else {
           console.info("Update resource in note");
+          if (fs.existsSync(file + ".jhf")) {
+            await hotfolder.updateResource(file);
+          } else {
+            note = await hotfolder.importAsAttachment(
+              file,
+              noteTitle,
+              hotfolderSettings.notebookId
+            );
+            jhf["noteid"] = note.id;
+            jhf["lastupdate"] = new Date().getTime();
+            let resources = await hotfolder.getNoteResource(note.id);
+            jhf["resourcesid"] = resources.items[0].id;
+            await hotfolder.writeJHF(file, jhf);
+          }
         }
       } else if (hotfolderSettings.action == "import") {
         if (importAsText !== -1) {
@@ -145,6 +159,75 @@ export namespace hotfolder {
     }
   }
 
+  export async function updateResourceInNote(oldResourceId: string, newResourceId: string, noteId: string): Promise<boolean> {
+    if(noteId == "*") {
+    } else {
+      return await changeResourceId(oldResourceId, newResourceId, noteId);
+    }
+  }
+
+  export async function changeResourceId(oldResourceId: string, newResourceId: string, noteId: string) {
+    let noteOrg = null;
+    try {
+      noteOrg = await joplin.data.get(["notes", noteId], {
+        fields: "body",
+      });
+    } catch (error) {
+      console.error("changeResourceId get note");
+      console.error(error);
+      return false;
+    }
+    let newBody = noteOrg.body.replace("(:/" + oldResourceId + ")", "(:/" + newResourceId + ")");
+
+    try {
+      await joplin.data.put(["notes", noteId], null, {
+        body: newBody,
+      }); 
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  export async function updateResource(file: string) {
+    let  info = await hotfolder.getJHF(file);
+    if (info === null) return false;
+
+    if (await hotfolder.fileModified(file, info) === true) {
+      let resource = await hotfolder.createResources(file, path.basename(file));
+
+      if(typeof(info['noteid']) === 'string') {
+        if(await updateResourceInNote(info['resourcesid'], resource.id, info['noteid']) === true) {
+          info["lastupdate"] = new Date().getTime();
+          info["resourcesid"] = resource.id;
+        } else {
+          info["error"] = "update error"
+        }
+        await hotfolder.writeJHF(file, info);
+      } else {
+        let error = false;
+        for (let id of info['noteid']) {
+          if(await updateResourceInNote(info['resourcesid'], resource.id, id) !== true){
+            info["error"] = "update error"
+            error = true;
+            break;
+          }
+        }
+
+        if(error === false) {
+          info["resourcesid"] = resource.id;
+        }
+      }
+    } else {
+      console.log("File not newer");
+    }
+  }
+
+  export async function getNoteResource(noteid: string): Promise<any> {
+    return await joplin.data.get(["notes", noteid, "resources"], {
+      fields: "id, title"
+    });
+  }
 
   export async function fileModified(file: string, jhf: any): Promise<boolean>{
     let filestat = fs.statSync(file);
