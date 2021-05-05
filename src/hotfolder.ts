@@ -202,7 +202,9 @@ export namespace hotfolder {
       }
 
       try {
-        return JSON.parse(data);
+        let info = JSON.parse(data);
+        info["error"] = ""; // Clear error msg
+        return info;
       } catch (e) {
         console.error("Json parse error");
         console.error(e);
