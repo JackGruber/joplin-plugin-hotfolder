@@ -26,6 +26,7 @@ First configure the Plugin under `Tools > Options > Hotfolder`!
 
 Each newly created file in the hotfolder is automatically created as a new note.
 The files are added as attachments unless the file extension is defined as `Add as text`.
+After processing the file are deleted from the hotfolder.
 
 ## Options
 
@@ -34,7 +35,7 @@ Go to `Tools > Options > Backup`
 | Option | Description | Default |
 | --- | --- | --- |
 | Hotfolder Path | Files from this path will be imported as new notes. | |
-| Ignore Files | Comma separated list of files to be ignored. | |
+| Ignore Files | Comma separated list of files to be ignored.<br>Wildcards (`*`) or RegExp possible.<br>To ignore a file with a `*` in the name, escape the `*` with a `\`, example: `test\*file.log` | `.*` (Dot files like `.DS_Store`) |
 | Add as text | Files with this file extension are imported as text and not as attachment. | .txt, .md |
 | Notebook | In which notebook should the note be created. <br> Subnotebooks can be defined via `Project\Scans`. | Current selected Notebook |
 | Tag | Comma separated list of tags to be added to the note. | |
