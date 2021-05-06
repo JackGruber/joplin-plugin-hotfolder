@@ -1,6 +1,6 @@
 # Changelog
 
-## not released
+## v0.4.0 (2021-05-06)
 
 - Add: Wildcard and RegExp match for `Ignore Files`
 - Add: `.*` (Dot files) as default for `Ignore Files`
