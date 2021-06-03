@@ -48,5 +48,8 @@
       "tsx",
       "js"
     ]
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
   }
 }
