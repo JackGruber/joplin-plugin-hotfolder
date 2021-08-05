@@ -1,5 +1,5 @@
 import joplin from "api";
-import { SettingItemType } from "api/types";
+import { SettingItem, SettingItemType } from "api/types";
 import { helper } from "./helper";
 
 export interface hotfolderSettings {
@@ -12,6 +12,8 @@ export interface hotfolderSettings {
 export namespace settings {
   export async function register() {
     let hotfolderNr = 0;
+    const settingsObject: Record<string, SettingItem> = {};
+
     do {
       await joplin.settings.registerSection(
         "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
@@ -23,19 +25,16 @@ export namespace settings {
         }
       );
 
-      await joplin.settings.registerSetting(
-        "hotfolderPath" + (hotfolderNr == 0 ? "" : hotfolderNr),
+      settingsObject["hotfolderPath" + (hotfolderNr == 0 ? "" : hotfolderNr)] =
         {
           value: "",
           type: SettingItemType.String,
           section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
           public: true,
           label: "Hotfolder Path",
-        }
-      );
+        };
 
-      await joplin.settings.registerSetting(
-        "ignoreFiles" + (hotfolderNr == 0 ? "" : hotfolderNr),
+      settingsObject["hotfolderPath" + (hotfolderNr == 0 ? "" : hotfolderNr)] =
         {
           value: ".*",
           type: SettingItemType.String,
@@ -43,24 +42,21 @@ export namespace settings {
           public: true,
           label: "Ignore Files",
           description: "Comma separated list of files which will be ignored.",
-        }
-      );
+        };
 
-      await joplin.settings.registerSetting(
-        "extensionsAddAsText" + (hotfolderNr == 0 ? "" : hotfolderNr),
-        {
-          value: ".txt, .md",
-          type: SettingItemType.String,
-          section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
-          public: true,
-          label: "Add as text",
-          description:
-            "Comma separated list of file extensions, which will be imported as text.",
-        }
-      );
+      settingsObject[
+        "extensionsAddAsText" + (hotfolderNr == 0 ? "" : hotfolderNr)
+      ] = {
+        value: ".txt, .md",
+        type: SettingItemType.String,
+        section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
+        public: true,
+        label: "Add as text",
+        description:
+          "Comma separated list of file extensions, which will be imported as text.",
+      };
 
-      await joplin.settings.registerSetting(
-        "importNotebook" + (hotfolderNr == 0 ? "" : hotfolderNr),
+      settingsObject["importNotebook" + (hotfolderNr == 0 ? "" : hotfolderNr)] =
         {
           value: "",
           type: SettingItemType.String,
@@ -69,36 +65,37 @@ export namespace settings {
           label: "Notebook",
           description:
             "If no notebook is specified, the import is made to the current notebook.",
-        }
-      );
+        };
 
-      await joplin.settings.registerSetting(
-        "importTags" + (hotfolderNr == 0 ? "" : hotfolderNr),
-        {
-          value: "",
-          type: SettingItemType.String,
-          section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
-          public: true,
-          label: "Tags",
-          description: "Comma separated list of tags to be added to the note.",
-        }
-      );
+      settingsObject["importTags" + (hotfolderNr == 0 ? "" : hotfolderNr)] = {
+        value: "",
+        type: SettingItemType.String,
+        section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
+        public: true,
+        label: "Tags",
+        description: "Comma separated list of tags to be added to the note.",
+      };
 
       if (hotfolderNr === 0) {
-        await joplin.settings.registerSetting("hotfolderAnz", {
-          value: 1,
-          minimum: 1,
-          maximum: 10,
-          type: SettingItemType.Int,
-          section: "hotfolderSection",
-          public: true,
-          label: "Number of Hotfolders",
-          description:
-            "Sections appear on the left (Please restart Joplin after a change).",
+        await joplin.settings.registerSettings({
+          hotfolderAnz: {
+            value: 1,
+            minimum: 1,
+            maximum: 10,
+            type: SettingItemType.Int,
+            section: "hotfolderSection",
+            public: true,
+            label: "Number of Hotfolders",
+            description:
+              "Sections appear on the left (Please restart Joplin after a change).",
+          },
         });
       }
+
       hotfolderNr++;
     } while (hotfolderNr < (await joplin.settings.value("hotfolderAnz")));
+
+    await joplin.settings.registerSettings(settingsObject);
   }
 
   export async function getHotfolder(
