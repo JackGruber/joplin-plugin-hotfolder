@@ -120,8 +120,6 @@ describe("Match RegEx", function () {
   });
 });
 
-
-
 describe("Escape RegExp pattern", function () {
   it(`Escape: ( ) [ ] / { }`, async () => {
     expect(await filePattern.escapeRegExp(`( ) [ ] / { }`)).toBe(
