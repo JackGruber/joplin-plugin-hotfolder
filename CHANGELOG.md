@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.0.0 (2021-08-05)
+
+- Improved: Use registerSettings instead of deprecated registerSetting
+
+❗ Requires at least Joplin v1.8.1 ❗
+
 ## v0.4.0 (2021-05-06)
 
 - Add: Wildcard and RegExp match for `Ignore Files`
