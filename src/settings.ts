@@ -34,15 +34,14 @@ export namespace settings {
           label: "Hotfolder Path",
         };
 
-      settingsObject["hotfolderPath" + (hotfolderNr == 0 ? "" : hotfolderNr)] =
-        {
-          value: ".*",
-          type: SettingItemType.String,
-          section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
-          public: true,
-          label: "Ignore Files",
-          description: "Comma separated list of files which will be ignored.",
-        };
+      settingsObject["ignoreFiles" + (hotfolderNr == 0 ? "" : hotfolderNr)] = {
+        value: ".*",
+        type: SettingItemType.String,
+        section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
+        public: true,
+        label: "Ignore Files",
+        description: "Comma separated list of files which will be ignored.",
+      };
 
       settingsObject[
         "extensionsAddAsText" + (hotfolderNr == 0 ? "" : hotfolderNr)

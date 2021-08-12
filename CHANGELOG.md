@@ -1,5 +1,11 @@
 # Changelog
 
+## not released
+
+## v1.0.1 (2021-08-12)
+
+- Fix: #13 `Hotfolder Path` is missing in settings and `Ignore Files` shows wrong value
+
 ## v1.0.0 (2021-08-05)
 
 - Improved: Use registerSettings instead of deprecated registerSetting
