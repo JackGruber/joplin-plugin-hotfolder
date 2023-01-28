@@ -63,7 +63,7 @@ export namespace settings {
           public: true,
           label: "Notebook",
           description:
-            "If no notebook is specified, the import is made to the current notebook.",
+            "If no notebook is specified, the import is made to the current notebook. The import-notebook (and their parent notebooks) currently cannot contain a space character. Nested notebooks have to be named like this:  top-level-notebook\sub-notebook",
         };
 
       settingsObject["importTags" + (hotfolderNr == 0 ? "" : hotfolderNr)] = {
