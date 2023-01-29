@@ -1,5 +1,5 @@
 import joplin from "api";
-import { SettingItem, SettingItemType } from "api/types";
+import { SettingItem, SettingItemType, SettingItemSubType } from "api/types";
 import { helper } from "./helper";
 
 export interface hotfolderSettings {
@@ -13,6 +13,7 @@ export namespace settings {
   export async function register() {
     let hotfolderNr = 0;
     const settingsObject: Record<string, SettingItem> = {};
+    const joplinVersionInfo = await helper.joplinVersionInfo();
 
     do {
       await joplin.settings.registerSection(
@@ -33,6 +34,15 @@ export namespace settings {
           public: true,
           label: "Hotfolder Path",
         };
+      // Add DirectoryPath selector for newer Joplin versions
+      if (
+        joplinVersionInfo !== null &&
+        (await helper.versionCompare(joplinVersionInfo.version, "2.10.4")) >= 0
+      ) {
+        settingsObject["hotfolderPath" + (hotfolderNr == 0 ? "" : hotfolderNr)][
+          "subType"
+        ] = SettingItemSubType.DirectoryPath;
+      }
 
       settingsObject["ignoreFiles" + (hotfolderNr == 0 ? "" : hotfolderNr)] = {
         value: ".*",
