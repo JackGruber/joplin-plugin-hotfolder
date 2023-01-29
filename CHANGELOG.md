@@ -2,6 +2,8 @@
 
 ## not released
 
+- Fix: #24 mixed case file extentions in `Add as text` setting
+
 ## v1.0.1 (2021-08-12)
 
 - Fix: #13 `Hotfolder Path` is missing in settings and `Ignore Files` shows wrong value

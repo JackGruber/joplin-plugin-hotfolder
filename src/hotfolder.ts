@@ -72,7 +72,6 @@ export namespace hotfolder {
 
       if (
         hotfolderSettings.extensionsAddAsText
-          .toLowerCase()
           .split(/\s*,\s*/)
           .indexOf(fileExt) !== -1
       ) {
