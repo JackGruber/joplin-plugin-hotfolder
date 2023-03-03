@@ -59,7 +59,7 @@ export namespace settings {
       settingsObject[
         "extensionsAddTextAsTodo" + (hotfolderNr == 0 ? "" : hotfolderNr)
       ] = {
-        value: true,
+        value: false,
         type: SettingItemType.Bool,
         section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
         public: true,
@@ -141,7 +141,7 @@ export namespace settings {
       importTags: importTags,
       extensionsAddAsText: extensionsAddAsText,
       ignoreFiles: ignoreFiles,
-      textAsTodo: extensionsAddTextAsTodo
+      textAsTodo: extensionsAddTextAsTodo,
     };
   }
 }
