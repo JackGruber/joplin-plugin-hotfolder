@@ -1,0 +1,17 @@
+{
+  "settings.hotfolderPath": "Hotfolder Path",
+  "settings.hotfolderPathDescription": "Folder from which the files should be imported",
+  "settings.ignoreFiles": "Ignore Files",
+  "settings.ignoreFilesDescription": "Comma separated list of files which will be ignored.",
+  "settings.extensionsAddAsText": "Add as text",
+  "settings.extensionsAddAsTextDescription": "Comma separated list of file extensions, which will be imported as text.",
+  "settings.importNotebook": "Notebook",
+  "settings.importNotebookDescription": "If no notebook is specified, the import is made to the current notebook.",
+  "settings.importTags": "Tags",
+  "settings.importTagsDescription": "Comma separated list of tags to be added to the note.",
+  "settings.hotfolderAnz": "Number of Hotfolders",
+  "settings.hotfolderAnzDescription": "Sections appear on the left (Please restart Joplin after a change).",
+  "settings.extensionsAddTextAsTodo": "Add text notes as Todo",
+  "settings.extensionsAddTextAsTodoDescription": "Text only notes will be imported as Todo type notes, all other file types will be imported as attachments in regular notes.",
+  "error.notebookNotExist": "Notebook `%s` for import destination of Hotfolder %s dosn't exist use actual notebook for imports"
+}

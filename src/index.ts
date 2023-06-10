@@ -5,12 +5,14 @@ import { hotfolder } from "./hotfolder";
 joplin.plugins.register({
   onStart: async function () {
     console.info("Hotfolder plugin started!");
+    await hotfolder.confLocale();
 
     joplin.settings.onChange(async (event: any) => {
       console.log("Settings changed");
       await hotfolder.register();
     });
 
+    await hotfolder.createDialogBox();
     await settings.register();
     await hotfolder.register();
   },

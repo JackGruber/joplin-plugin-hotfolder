@@ -12,4 +12,3 @@ jobs:
         uses: pozil/auto-assign-issue@v1.4.0
         with:
           assignees: JackGruber
-

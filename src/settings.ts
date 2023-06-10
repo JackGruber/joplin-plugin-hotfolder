@@ -1,18 +1,22 @@
 import joplin from "api";
-import { SettingItem, SettingItemType } from "api/types";
+import { SettingItem, SettingItemType, SettingItemSubType } from "api/types";
 import { helper } from "./helper";
+import { i18n } from "./hotfolder";
 
 export interface hotfolderSettings {
   notebookId: string;
   extensionsAddAsText: string;
   ignoreFiles: string;
   importTags: string;
+  textAsTodo: boolean;
+  importNotebook: string;
 }
 
 export namespace settings {
   export async function register() {
     let hotfolderNr = 0;
     const settingsObject: Record<string, SettingItem> = {};
+    const joplinVersionInfo = await helper.joplinVersionInfo();
 
     do {
       await joplin.settings.registerSection(
@@ -31,16 +35,26 @@ export namespace settings {
           type: SettingItemType.String,
           section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
           public: true,
-          label: "Hotfolder Path",
+          label: i18n.__("settings.hotfolderPath"),
+          description: i18n.__("settings.hotfolderPathDescription"),
         };
+      // Add DirectoryPath selector for newer Joplin versions
+      if (
+        joplinVersionInfo !== null &&
+        (await helper.versionCompare(joplinVersionInfo.version, "2.10.4")) >= 0
+      ) {
+        settingsObject["hotfolderPath" + (hotfolderNr == 0 ? "" : hotfolderNr)][
+          "subType"
+        ] = SettingItemSubType.DirectoryPath;
+      }
 
       settingsObject["ignoreFiles" + (hotfolderNr == 0 ? "" : hotfolderNr)] = {
         value: ".*",
         type: SettingItemType.String,
         section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
         public: true,
-        label: "Ignore Files",
-        description: "Comma separated list of files which will be ignored.",
+        label: i18n.__("settings.ignoreFiles"),
+        description: i18n.__("settings.ignoreFilesDescription"),
       };
 
       settingsObject[
@@ -50,9 +64,19 @@ export namespace settings {
         type: SettingItemType.String,
         section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
         public: true,
-        label: "Add as text",
-        description:
-          "Comma separated list of file extensions, which will be imported as text.",
+        label: i18n.__("settings.extensionsAddAsText"),
+        description: i18n.__("settings.extensionsAddAsTextDescription"),
+      };
+
+      settingsObject[
+        "extensionsAddTextAsTodo" + (hotfolderNr == 0 ? "" : hotfolderNr)
+      ] = {
+        value: false,
+        type: SettingItemType.Bool,
+        section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
+        public: true,
+        label: i18n.__("settings.extensionsAddTextAsTodo"),
+        description: i18n.__("settings.extensionsAddTextAsTodoDescription"),
       };
 
       settingsObject["importNotebook" + (hotfolderNr == 0 ? "" : hotfolderNr)] =
@@ -61,9 +85,8 @@ export namespace settings {
           type: SettingItemType.String,
           section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
           public: true,
-          label: "Notebook",
-          description:
-            "If no notebook is specified, the import is made to the current notebook.",
+          label: i18n.__("settings.importNotebook"),
+          description: i18n.__("settings.importNotebookDescription"),
         };
 
       settingsObject["importTags" + (hotfolderNr == 0 ? "" : hotfolderNr)] = {
@@ -71,8 +94,8 @@ export namespace settings {
         type: SettingItemType.String,
         section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
         public: true,
-        label: "Tags",
-        description: "Comma separated list of tags to be added to the note.",
+        label: i18n.__("settings.importTags"),
+        description: i18n.__("settings.importTagsDescription"),
       };
 
       if (hotfolderNr === 0) {
@@ -84,9 +107,8 @@ export namespace settings {
             type: SettingItemType.Int,
             section: "hotfolderSection",
             public: true,
-            label: "Number of Hotfolders",
-            description:
-              "Sections appear on the left (Please restart Joplin after a change).",
+            label: i18n.__("settings.hotfolderAnz"),
+            description: i18n.__("settings.hotfolderAnzDescription"),
           },
         });
       }
@@ -108,6 +130,10 @@ export namespace settings {
       "extensionsAddAsText" + hotfolderNr
     );
 
+    const extensionsAddTextAsTodo = await joplin.settings.value(
+      "extensionsAddTextAsTodo" + hotfolderNr
+    );
+
     const selectedFolder = await joplin.workspace.selectedFolder();
     const importNotebook = await joplin.settings.value(
       "importNotebook" + hotfolderNr
@@ -124,6 +150,8 @@ export namespace settings {
       importTags: importTags,
       extensionsAddAsText: extensionsAddAsText,
       ignoreFiles: ignoreFiles,
+      textAsTodo: extensionsAddTextAsTodo,
+      importNotebook: importNotebook,
     };
   }
 }
