@@ -5,7 +5,8 @@
 - Fix: #24 mixed case file extentions in `Add as text` setting
 - Add: DirectoryPath selector for hotfolder path on Joplin >= v2.10.4
 - Add: Translation to German
-- Add option `Add text notes as Todo` to import text files as ToDo
+- Add: Option `Add text notes as Todo` to import text files as ToDo
+- Add: #29 Added warning message when importing to a non-existing notebook
 
 ## v1.0.1 (2021-08-12)
 
