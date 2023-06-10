@@ -12,6 +12,7 @@ joplin.plugins.register({
       await hotfolder.register();
     });
 
+    await hotfolder.createDialogBox();
     await settings.register();
     await hotfolder.register();
   },

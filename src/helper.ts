@@ -9,6 +9,13 @@ export namespace helper {
     }
   }
 
+  export async function checkNotebookExist(
+    notebookName: string
+  ): Promise<Boolean> {
+    if ((await this.getNotebookId(notebookName, false)) !== null) return true;
+    return false;
+  }
+
   // -2: Error
   // -1: Lower version
   // 0: Version equal

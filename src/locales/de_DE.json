@@ -12,5 +12,6 @@
   "settings.hotfolderAnz": "Anzahl an Hotfolder",
   "settings.hotfolderAnzDescription": "Die Hotfolder erscheinen auf der linken Seite (Bitte starten Sie Joplin nach einer Änderung neu).",
   "settings.extensionsAddTextAsTodo": "Text Notizen als ToDo erstellen",
-  "settings.extensionsAddTextAsTodoDescription": "Text Notizen werden als Todo importiert, alle anderen Dateitypen werden als Anhänge in normale Notizen importiert."
+  "settings.extensionsAddTextAsTodoDescription": "Text Notizen werden als Todo importiert, alle anderen Dateitypen werden als Anhänge in normale Notizen importiert.",
+  "error.notebookNotExist": "Das Notebook `%s` für das Importziel vom Hotfolder %s existiert nicht, das aktuelle Notizbuch wird genutzt."
 }

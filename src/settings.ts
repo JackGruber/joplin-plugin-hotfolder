@@ -9,6 +9,7 @@ export interface hotfolderSettings {
   ignoreFiles: string;
   importTags: string;
   textAsTodo: boolean;
+  importNotebook: string;
 }
 
 export namespace settings {
@@ -150,6 +151,7 @@ export namespace settings {
       extensionsAddAsText: extensionsAddAsText,
       ignoreFiles: ignoreFiles,
       textAsTodo: extensionsAddTextAsTodo,
+      importNotebook: importNotebook,
     };
   }
 }
