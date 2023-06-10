@@ -2,6 +2,8 @@
 
 ## not released
 
+## v1.1.0 (2023-06-10)
+
 - Fix: #24 mixed case file extentions in `Add as text` setting
 - Add: DirectoryPath selector for hotfolder path on Joplin >= v2.10.4
 - Add: Translation to German
