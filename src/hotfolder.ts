@@ -99,7 +99,8 @@ export namespace hotfolder {
         newNote = await hotfolder.importAsText(
           file,
           noteTitle,
-          hotfolderSettings.notebookId
+          hotfolderSettings.notebookId,
+          hotfolderSettings.textAsTodo
         );
       } else {
         console.info("Import as attachment");
@@ -126,7 +127,8 @@ export namespace hotfolder {
   export async function importAsText(
     file: string,
     noteTitle: string,
-    folder: string
+    folder: string,
+    todo: boolean
   ): Promise<any> {
     let fileBuffer = null;
     try {
@@ -140,6 +142,7 @@ export namespace hotfolder {
       body: fileBuffer.toString(),
       title: noteTitle,
       parent_id: folder,
+      is_todo: todo ? 1 : 0,
     });
   }
 

@@ -8,6 +8,7 @@ export interface hotfolderSettings {
   extensionsAddAsText: string;
   ignoreFiles: string;
   importTags: string;
+  textAsTodo: boolean;
 }
 
 export namespace settings {
@@ -66,6 +67,18 @@ export namespace settings {
         description: i18n.__("settings.extensionsAddAsTextDescription"),
       };
 
+      settingsObject[
+        "extensionsAddTextAsTodo" + (hotfolderNr == 0 ? "" : hotfolderNr)
+      ] = {
+        value: false,
+        type: SettingItemType.Bool,
+        section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
+        public: true,
+        label: "Add text notes as Todo",
+        description:
+          "Text only notes will be imported as Todo type notes, all other file types will be imported as attachments in regular notes.",
+      };
+
       settingsObject["importNotebook" + (hotfolderNr == 0 ? "" : hotfolderNr)] =
         {
           value: "",
@@ -117,6 +130,10 @@ export namespace settings {
       "extensionsAddAsText" + hotfolderNr
     );
 
+    const extensionsAddTextAsTodo = await joplin.settings.value(
+      "extensionsAddTextAsTodo" + hotfolderNr
+    );
+
     const selectedFolder = await joplin.workspace.selectedFolder();
     const importNotebook = await joplin.settings.value(
       "importNotebook" + hotfolderNr
@@ -133,6 +150,7 @@ export namespace settings {
       importTags: importTags,
       extensionsAddAsText: extensionsAddAsText,
       ignoreFiles: ignoreFiles,
+      textAsTodo: extensionsAddTextAsTodo,
     };
   }
 }
