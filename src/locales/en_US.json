@@ -1,0 +1,14 @@
+{
+  "settings.hotfolderPath": "Hotfolder Path",
+  "settings.hotfolderPathDescription": "Folder from which the files should be imported",
+  "settings.ignoreFiles": "Ignore Files",
+  "settings.ignoreFilesDescription": "Comma separated list of files which will be ignored.",
+  "settings.extensionsAddAsText": "Add as text",
+  "settings.extensionsAddAsTextDescription": "Comma separated list of file extensions, which will be imported as text.",
+  "settings.importNotebook": "Notebook",
+  "settings.importNotebookDescription": "If no notebook is specified, the import is made to the current notebook.",
+  "settings.importTags": "Tags",
+  "settings.importTagsDescription": "Comma separated list of tags to be added to the note.",
+  "settings.hotfolderAnz": "Number of Hotfolders",
+  "settings.hotfolderAnzDescription": "Sections appear on the left (Please restart Joplin after a change)."
+}

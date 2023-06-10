@@ -1,6 +1,7 @@
 import joplin from "api";
 import { SettingItem, SettingItemType, SettingItemSubType } from "api/types";
 import { helper } from "./helper";
+import { i18n } from "./hotfolder";
 
 export interface hotfolderSettings {
   notebookId: string;
@@ -32,7 +33,8 @@ export namespace settings {
           type: SettingItemType.String,
           section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
           public: true,
-          label: "Hotfolder Path",
+          label: i18n.__("settings.hotfolderPath"),
+          description: i18n.__("settings.hotfolderPathDescription"),
         };
       // Add DirectoryPath selector for newer Joplin versions
       if (
@@ -49,8 +51,8 @@ export namespace settings {
         type: SettingItemType.String,
         section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
         public: true,
-        label: "Ignore Files",
-        description: "Comma separated list of files which will be ignored.",
+        label: i18n.__("settings.ignoreFiles"),
+        description: i18n.__("settings.ignoreFilesDescription"),
       };
 
       settingsObject[
@@ -60,9 +62,8 @@ export namespace settings {
         type: SettingItemType.String,
         section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
         public: true,
-        label: "Add as text",
-        description:
-          "Comma separated list of file extensions, which will be imported as text.",
+        label: i18n.__("settings.extensionsAddAsText"),
+        description: i18n.__("settings.extensionsAddAsTextDescription"),
       };
 
       settingsObject["importNotebook" + (hotfolderNr == 0 ? "" : hotfolderNr)] =
@@ -71,9 +72,8 @@ export namespace settings {
           type: SettingItemType.String,
           section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
           public: true,
-          label: "Notebook",
-          description:
-            "If no notebook is specified, the import is made to the current notebook.",
+          label: i18n.__("settings.importNotebook"),
+          description: i18n.__("settings.importNotebookDescription"),
         };
 
       settingsObject["importTags" + (hotfolderNr == 0 ? "" : hotfolderNr)] = {
@@ -81,8 +81,8 @@ export namespace settings {
         type: SettingItemType.String,
         section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
         public: true,
-        label: "Tags",
-        description: "Comma separated list of tags to be added to the note.",
+        label: i18n.__("settings.importTags"),
+        description: i18n.__("settings.importTagsDescription"),
       };
 
       if (hotfolderNr === 0) {
@@ -94,9 +94,8 @@ export namespace settings {
             type: SettingItemType.Int,
             section: "hotfolderSection",
             public: true,
-            label: "Number of Hotfolders",
-            description:
-              "Sections appear on the left (Please restart Joplin after a change).",
+            label: i18n.__("settings.hotfolderAnz"),
+            description: i18n.__("settings.hotfolderAnzDescription"),
           },
         });
       }

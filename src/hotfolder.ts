@@ -5,7 +5,9 @@ import * as path from "path";
 import * as fileType from "file-type";
 import { helper } from "./helper";
 import { hotfolderSettings, settings } from "./settings";
+import { I18n } from "i18n";
 
+let i18n: any;
 const fs = require("fs-extra");
 
 let watchers = [];
@@ -50,6 +52,24 @@ export namespace hotfolder {
         watchers.push(hotfolderWatcher);
       }
     }
+  }
+
+  export async function confLocale() {
+    const installationDir = await joplin.plugins.installationDir();
+    const localesDir = path.join(installationDir, "locales");
+    const joplinLocale = await joplin.settings.globalValue("locale");
+    console.log(localesDir);
+    console.log(joplinLocale);
+    i18n = new I18n({
+      locales: ["en_US", "de_DE"],
+      defaultLocale: "en_US",
+      fallbacks: { "en_*": "en_US" },
+      updateFiles: false,
+      retryInDefaultLocale: true,
+      syncFiles: true,
+      directory: localesDir,
+    });
+    i18n.setLocale(joplinLocale);
   }
 
   export async function processFile(file: string, hotfolderNr: string) {
@@ -164,3 +184,5 @@ export namespace hotfolder {
     }
   }
 }
+
+export { i18n };
