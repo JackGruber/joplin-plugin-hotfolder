@@ -74,9 +74,8 @@ export namespace settings {
         type: SettingItemType.Bool,
         section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
         public: true,
-        label: "Add text notes as Todo",
-        description:
-          "Text only notes will be imported as Todo type notes, all other file types will be imported as attachments in regular notes.",
+        label: i18n.__("settings.extensionsAddTextAsTodo"),
+        description: i18n.__("settings.extensionsAddTextAsTodoDescription"),
       };
 
       settingsObject["importNotebook" + (hotfolderNr == 0 ? "" : hotfolderNr)] =

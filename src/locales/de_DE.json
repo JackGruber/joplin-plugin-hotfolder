@@ -10,5 +10,7 @@
   "settings.importTags": "Tags",
   "settings.importTagsDescription": "Durch Kommata getrennte Liste der Tags, die der Notiz hinzugefügt werden sollen.",
   "settings.hotfolderAnz": "Anzahl an Hotfolder",
-  "settings.hotfolderAnzDescription": "Die Hotfolder erscheinen auf der linken Seite (Bitte starten Sie Joplin nach einer Änderung neu)."
+  "settings.hotfolderAnzDescription": "Die Hotfolder erscheinen auf der linken Seite (Bitte starten Sie Joplin nach einer Änderung neu).",
+  "settings.extensionsAddTextAsTodo": "Text Notizen als ToDo erstellen",
+  "settings.extensionsAddTextAsTodoDescription": "Text Notizen werden als Todo importiert, alle anderen Dateitypen werden als Anhänge in normale Notizen importiert."
 }

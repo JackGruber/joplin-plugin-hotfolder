@@ -10,5 +10,7 @@
   "settings.importTags": "Tags",
   "settings.importTagsDescription": "Comma separated list of tags to be added to the note.",
   "settings.hotfolderAnz": "Number of Hotfolders",
-  "settings.hotfolderAnzDescription": "Sections appear on the left (Please restart Joplin after a change)."
+  "settings.hotfolderAnzDescription": "Sections appear on the left (Please restart Joplin after a change).",
+  "settings.extensionsAddTextAsTodo": "Add text notes as Todo",
+  "settings.extensionsAddTextAsTodoDescription": "Text only notes will be imported as Todo type notes, all other file types will be imported as attachments in regular notes."
 }
