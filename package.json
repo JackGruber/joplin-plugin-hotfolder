@@ -42,7 +42,8 @@
   },
   "dependencies": {
     "chokidar": "^3.5.1",
-    "file-type": "^16.2.0"
+    "file-type": "^16.2.0",
+    "i18n": "^0.15.1"
   },
   "browser": {
     "fs": false
