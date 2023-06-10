@@ -58,8 +58,6 @@ export namespace hotfolder {
     const installationDir = await joplin.plugins.installationDir();
     const localesDir = path.join(installationDir, "locales");
     const joplinLocale = await joplin.settings.globalValue("locale");
-    console.log(localesDir);
-    console.log(joplinLocale);
     i18n = new I18n({
       locales: ["en_US", "de_DE"],
       defaultLocale: "en_US",
