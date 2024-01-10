@@ -1,4 +1,4 @@
-# Joplin Hotfolder Plugin
+# Joplin Hotfolder Plugin <img src="img/icon_32.png">
 
 A plugin to Monitor a locale folder and import the files as a new note.
 

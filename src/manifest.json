@@ -8,5 +8,8 @@
   "author": "JackGruber",
   "homepage_url": "https://github.com/JackGruber/joplin-plugin-hotfolder/blob/master/README.md",
   "repository_url": "https://github.com/JackGruber/joplin-plugin-hotfolder",
-  "keywords": ["hotfolder", "import", "monitor"]
+  "keywords": ["hotfolder", "import", "monitor"],
+  "icons": {
+    "256": "img/icon_256.png"
+  }
 }
