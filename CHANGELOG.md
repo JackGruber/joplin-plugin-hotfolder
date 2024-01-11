@@ -2,6 +2,8 @@
 
 ## not released
 
+- Add: Screenshots / icon for [https://joplinapp.org/plugins/](https://joplinapp.org/plugins/)
+
 ## v1.1.0 (2023-06-10)
 
 - Fix: #24 mixed case file extentions in `Add as text` setting
