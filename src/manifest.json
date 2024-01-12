@@ -9,7 +9,7 @@
   "homepage_url": "https://github.com/JackGruber/joplin-plugin-hotfolder/blob/master/README.md",
   "repository_url": "https://github.com/JackGruber/joplin-plugin-hotfolder",
   "keywords": ["hotfolder", "import", "monitor"],
-  "categories": ["themes", "files"],
+  "categories": ["productivity", "files"],
   "screenshots": [
     {
       "src": "img/main.png",
