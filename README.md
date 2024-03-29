@@ -4,6 +4,19 @@ A plugin to Monitor a locale folder and import the files as a new note.
 
 <img src="img/main.png">
 
+<!-- prettier-ignore-start -->
+<!-- TOC depthfrom:2 orderedlist:false -->
+
+- [Installation](#installation)
+    - [Automatic](#automatic)
+    - [Manual](#manual)
+- [Usage](#usage)
+- [Options](#options)
+- [Changelog](#changelog)
+
+<!-- /TOC -->
+<!-- prettier-ignore-end -->
+
 ## Installation
 
 ### Automatic
