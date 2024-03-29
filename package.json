@@ -43,7 +43,7 @@
     "yargs": "^16.2.0"
   },
   "dependencies": {
-    "chokidar": "^3.5.1",
+    "chokidar": "^3.6.0",
     "file-type": "^16.2.0",
     "i18n": "^0.15.1"
   },
