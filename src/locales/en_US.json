@@ -1,17 +1,37 @@
 {
-  "settings.hotfolderPath": "Hotfolder Path",
-  "settings.hotfolderPathDescription": "Folder from which the files should be imported",
-  "settings.ignoreFiles": "Ignore Files",
-  "settings.ignoreFilesDescription": "Comma separated list of files which will be ignored.",
-  "settings.extensionsAddAsText": "Add as text",
-  "settings.extensionsAddAsTextDescription": "Comma separated list of file extensions, which will be imported as text.",
-  "settings.importNotebook": "Notebook",
-  "settings.importNotebookDescription": "If no notebook is specified, the import is made to the current notebook.",
-  "settings.importTags": "Tags",
-  "settings.importTagsDescription": "Comma separated list of tags to be added to the note.",
-  "settings.hotfolderAnz": "Number of Hotfolders",
-  "settings.hotfolderAnzDescription": "Sections appear on the left (Please restart Joplin after a change).",
-  "settings.extensionsAddTextAsTodo": "Add text notes as Todo",
-  "settings.extensionsAddTextAsTodoDescription": "Text only notes will be imported as Todo type notes, all other file types will be imported as attachments in regular notes.",
-  "error.notebookNotExist": "Notebook `%s` for import destination of Hotfolder %s doesn't exist use actual notebook for imports"
+  "settings": {
+    "hotfolderPath": {
+      "label": "Hotfolder Path",
+      "description": "Folder from which the files should be imported"
+    },
+    "ignoreFiles": {
+      "label": "Ignore Files",
+      "description": "Comma separated list of files which will be ignored"
+    },
+    "extensionsAddAsText": {
+      "label": "Add as text",
+      "description": "Comma separated list of file extensions, which will be imported as text"
+    },
+    "importNotebook": {
+      "label": "Notebook",
+      "description": "If no notebook is specified, the import is made to the current notebook"
+    },
+    "importTags": {
+      "label": "Tags",
+      "description": "Comma separated list of tags to be added to the note"
+    },
+    "hotfolderAnz": {
+      "label": "Number of Hotfolders",
+      "description": "Sections appear on the left (Please restart Joplin after a change)"
+    },
+    "extensionsAddTextAsTodo": {
+      "label": "Add text notes as Todo",
+      "description": "Text only notes will be imported as Todo type notes, all other file types will be imported as attachments in regular notes"
+    }
+  },
+  "msg": {
+    "error": {
+      "notebookNotExist": "Notebook `%s` for import destination of Hotfolder %s doesn't exist use actual notebook for imports"
+    }
+  }
 }

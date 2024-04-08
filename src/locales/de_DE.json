@@ -1,17 +1,37 @@
 {
-  "settings.hotfolderPath": "Hotfolder Pfad",
-  "settings.hotfolderPathDescription": "Ordner von welchem die Dateien importiert werden sollen",
-  "settings.ignoreFiles": "Dateien ignorieren",
-  "settings.ignoreFilesDescription": "Durch Kommata getrennte Liste von Dateien welche ignoriert werden sollen.",
-  "settings.extensionsAddAsText": "Als Text hinzufügen",
-  "settings.extensionsAddAsTextDescription": "Durch Kommata getrennte Liste von Dateiendungen, welche als Text importiert werden sollen.",
-  "settings.importNotebook": "Notizbuch",
-  "settings.importNotebookDescription": "Wird kein Notizbuch angegeben, erfolgt der Import in das aktuelle Notizbuch.",
-  "settings.importTags": "Tags",
-  "settings.importTagsDescription": "Durch Kommata getrennte Liste der Tags, die der Notiz hinzugefügt werden sollen.",
-  "settings.hotfolderAnz": "Anzahl an Hotfolder",
-  "settings.hotfolderAnzDescription": "Die Hotfolder erscheinen auf der linken Seite (Bitte starten Sie Joplin nach einer Änderung neu).",
-  "settings.extensionsAddTextAsTodo": "Text Notizen als ToDo erstellen",
-  "settings.extensionsAddTextAsTodoDescription": "Text Notizen werden als Todo importiert, alle anderen Dateitypen werden als Anhänge in normale Notizen importiert.",
-  "error.notebookNotExist": "Das Notebook `%s` für das Importziel vom Hotfolder %s existiert nicht, das aktuelle Notizbuch wird genutzt."
+  "settings": {
+    "hotfolderPath": {
+      "label": "Hotfolder Pfad",
+      "description": "Ordner von welchem die Dateien importiert werden sollen"
+    },
+    "ignoreFiles": {
+      "label": "Dateien ignorieren",
+      "description": "Durch Kommata getrennte Liste von Dateien welche ignoriert werden sollen"
+    },
+    "extensionsAddAsText": {
+      "label": "Als Text hinzufügen",
+      "description": "Durch Kommata getrennte Liste von Dateiendungen, welche als Text importiert werden sollen"
+    },
+    "importNotebook": {
+      "label": "Notizbuch",
+      "description": "Wird kein Notizbuch angegeben, erfolgt der Import in das aktuelle Notizbuch"
+    },
+    "importTags": {
+      "label": "Tags",
+      "description": "Durch Kommata getrennte Liste der Tags, die der Notiz hinzugefügt werden sollen"
+    },
+    "hotfolderAnz": {
+      "label": "Anzahl an Hotfolder",
+      "description": "Die Hotfolder erscheinen auf der linken Seite (Bitte starten Sie Joplin nach einer Änderung neu)"
+    },
+    "extensionsAddTextAsTodo": {
+      "label": "Text Notizen als ToDo erstellen",
+      "description": "Text Notizen werden als Todo importiert, alle anderen Dateitypen werden als Anhänge in normale Notizen importiert"
+    }
+  },
+  "msg": {
+    "error": {
+      "notebookNotExist": "Das Notebook `%s` für das Importziel vom Hotfolder %s existiert nicht, das aktuelle Notizbuch wird genutzt"
+    }
+  }
 }

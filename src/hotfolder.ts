@@ -102,6 +102,7 @@ export namespace hotfolder {
       retryInDefaultLocale: true,
       syncFiles: true,
       directory: localesDir,
+      objectNotation: true,
     });
     i18n.setLocale(joplinLocale);
   }
@@ -134,7 +135,7 @@ export namespace hotfolder {
       ) {
         hotfolder.showMsg(
           i18n.__(
-            "error.notebookNotExist",
+            "msg.error.notebookNotExist",
             hotfolderSettings.importNotebook.trim(),
             parseInt(hotfolderNr) == 0 ? "" : parseInt(hotfolderNr) + 1
           )

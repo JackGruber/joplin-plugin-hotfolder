@@ -35,8 +35,8 @@ export namespace settings {
           type: SettingItemType.String,
           section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
           public: true,
-          label: i18n.__("settings.hotfolderPath"),
-          description: i18n.__("settings.hotfolderPathDescription"),
+          label: i18n.__("settings.hotfolderPath.label"),
+          description: i18n.__("settings.hotfolderPath.description"),
         };
       // Add DirectoryPath selector for newer Joplin versions
       if (
@@ -53,8 +53,8 @@ export namespace settings {
         type: SettingItemType.String,
         section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
         public: true,
-        label: i18n.__("settings.ignoreFiles"),
-        description: i18n.__("settings.ignoreFilesDescription"),
+        label: i18n.__("settings.ignoreFiles.label"),
+        description: i18n.__("settings.ignoreFiles.description"),
       };
 
       settingsObject[
@@ -64,8 +64,8 @@ export namespace settings {
         type: SettingItemType.String,
         section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
         public: true,
-        label: i18n.__("settings.extensionsAddAsText"),
-        description: i18n.__("settings.extensionsAddAsTextDescription"),
+        label: i18n.__("settings.extensionsAddAsText.label"),
+        description: i18n.__("settings.extensionsAddAsText.description"),
       };
 
       settingsObject[
@@ -75,8 +75,8 @@ export namespace settings {
         type: SettingItemType.Bool,
         section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
         public: true,
-        label: i18n.__("settings.extensionsAddTextAsTodo"),
-        description: i18n.__("settings.extensionsAddTextAsTodoDescription"),
+        label: i18n.__("settings.extensionsAddTextAsTodo.label"),
+        description: i18n.__("settings.extensionsAddTextAsTodo.description"),
       };
 
       settingsObject["importNotebook" + (hotfolderNr == 0 ? "" : hotfolderNr)] =
@@ -85,8 +85,8 @@ export namespace settings {
           type: SettingItemType.String,
           section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
           public: true,
-          label: i18n.__("settings.importNotebook"),
-          description: i18n.__("settings.importNotebookDescription"),
+          label: i18n.__("settings.importNotebook.label"),
+          description: i18n.__("settings.importNotebook.description"),
         };
 
       settingsObject["importTags" + (hotfolderNr == 0 ? "" : hotfolderNr)] = {
@@ -94,8 +94,8 @@ export namespace settings {
         type: SettingItemType.String,
         section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
         public: true,
-        label: i18n.__("settings.importTags"),
-        description: i18n.__("settings.importTagsDescription"),
+        label: i18n.__("settings.importTags.label"),
+        description: i18n.__("settings.importTags.description"),
       };
 
       if (hotfolderNr === 0) {
@@ -107,8 +107,8 @@ export namespace settings {
             type: SettingItemType.Int,
             section: "hotfolderSection",
             public: true,
-            label: i18n.__("settings.hotfolderAnz"),
-            description: i18n.__("settings.hotfolderAnzDescription"),
+            label: i18n.__("settings.hotfolderAnz.label"),
+            description: i18n.__("settings.hotfolderAnz.description"),
           },
         });
       }
