@@ -58,7 +58,7 @@ export namespace hotfolder {
     if (watchers.length > 0) {
       hotfolderLog.verbose("Close watchers");
       for (let watcher of watchers) {
-        watcher.close().then(() => console.log("Hotfolder closed"));
+        watcher.close().then(() => hotfolderLog.verbose("Hotfolder closed"));
       }
       watchers = [];
     }
@@ -172,7 +172,7 @@ export namespace hotfolder {
       let newBody = null;
       let noteTitle = fileName.replace(fileExt, "");
 
-      console.log(hotfolderSettings.notebookId);
+      hotfolderLog.verbose(hotfolderSettings.notebookId);
 
       if (
         hotfolderSettings.importNotebook.trim() !== "" &&
@@ -194,7 +194,7 @@ export namespace hotfolder {
           .split(/\s*,\s*/)
           .indexOf(fileExt) !== -1
       ) {
-        console.info("Import as Text");
+        hotfolderLog.verbose("Import as Text");
         newNote = await hotfolder.importAsText(
           file,
           noteTitle,
@@ -202,7 +202,7 @@ export namespace hotfolder {
           hotfolderSettings.textAsTodo
         );
       } else {
-        console.info("Import as attachment");
+        hotfolderLog.verbose("Import as attachment");
         newNote = await hotfolder.importAsAttachment(
           file,
           noteTitle,
@@ -215,11 +215,13 @@ export namespace hotfolder {
       try {
         fs.removeSync(file);
       } catch (e) {
-        console.error(e);
+        hotfolderLog.error(e);
         return;
       }
     } else {
-      console.info("File is ignored! ignoreFileUser: " + ignoreFileUser);
+      hotfolderLog.verbose(
+        "File is ignored! ignoreFileUser: " + ignoreFileUser
+      );
     }
   }
 
@@ -234,8 +236,8 @@ export namespace hotfolder {
     try {
       fileBuffer = fs.readFileSync(file);
     } catch (e) {
-      console.error("Error on readFileSync");
-      console.error(e);
+      hotfolderLog.error("Error on readFileSync");
+      hotfolderLog.error(e);
       return;
     }
     return await joplin.data.post(["notes"], null, {
@@ -283,8 +285,8 @@ export namespace hotfolder {
         },
       ]);
     } catch (e) {
-      console.error("Error on create resources");
-      console.error(e);
+      hotfolderLog.error("Error on create resources");
+      hotfolderLog.error(e);
       return null;
     }
   }
