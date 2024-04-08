@@ -27,6 +27,10 @@
     "extensionsAddTextAsTodo": {
       "label": "Add text notes as Todo",
       "description": "Text only notes will be imported as Todo type notes, all other file types will be imported as attachments in regular notes"
+    },
+    "fileLogLevel": {
+      "label": "Loglevel",
+      "description": "Loglevel for the logfile"
     }
   },
   "msg": {

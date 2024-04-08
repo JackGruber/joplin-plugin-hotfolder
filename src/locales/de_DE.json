@@ -27,6 +27,10 @@
     "extensionsAddTextAsTodo": {
       "label": "Text Notizen als ToDo erstellen",
       "description": "Text Notizen werden als Todo importiert, alle anderen Dateitypen werden als Anhänge in normale Notizen importiert"
+    },
+    "fileLogLevel": {
+      "label": "Protokollierungsebene",
+      "description": "Protokollierungsebene für die Logdatei"
     }
   },
   "msg": {

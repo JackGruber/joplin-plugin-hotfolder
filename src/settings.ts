@@ -110,6 +110,23 @@ export namespace settings {
             label: i18n.__("settings.hotfolderAnz.label"),
             description: i18n.__("settings.hotfolderAnz.description"),
           },
+          fileLogLevel: {
+            value: "error",
+            type: SettingItemType.String,
+            section: "hotfolderSection",
+            isEnum: true,
+            public: true,
+            advanced: true,
+            label: i18n.__("settings.fileLogLevel.label"),
+            description: i18n.__("settings.fileLogLevel.description"),
+            options: {
+              false: "Off",
+              verbose: "Verbose",
+              info: "Info",
+              warn: "Warning",
+              error: "Error",
+            },
+          },
         });
       }
 

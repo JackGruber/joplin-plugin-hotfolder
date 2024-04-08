@@ -6,18 +6,57 @@ import * as fileType from "file-type";
 import { helper } from "./helper";
 import { hotfolderSettings, settings } from "./settings";
 import { I18n } from "i18n";
+import hotfolderLogging from "electron-log";
 
 const fs = require("fs-extra");
 
 let i18n: any;
 let watchers = [];
 let dialogBox = null;
+let hotfolderLog = hotfolderLogging;
+let hotfolderLogFile = null;
 
 export namespace hotfolder {
+  export async function setupLog() {
+    const logFormat = "[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}] {text}";
+    hotfolderLog.transports.file.level = false;
+    hotfolderLog.transports.file.format = logFormat;
+    hotfolderLog.transports.console.level = "verbose";
+    hotfolderLog.transports.console.format = logFormat;
+    const installationDir = await joplin.plugins.installationDir();
+    hotfolderLogFile = path.join(installationDir, "hotfolder.log");
+  }
+
+  export async function fileLogging(enable: boolean) {
+    const fileLogLevel = await joplin.settings.value("fileLogLevel");
+    if (enable === true && fileLogLevel !== "false") {
+      hotfolderLog.transports.file.resolvePath = () => hotfolderLogFile;
+      hotfolderLog.transports.file.level = fileLogLevel;
+    } else {
+      hotfolderLog.transports.file.level = false;
+    }
+  }
+
+  export async function deleteLogFile() {
+    hotfolderLog.verbose("Delete log file");
+    if (fs.existsSync(hotfolderLogFile)) {
+      try {
+        await fs.unlinkSync(hotfolderLogFile);
+      } catch (e) {
+        hotfolderLog.error("deleteLogFile: " + e.message);
+      }
+    }
+  }
+
   export async function register() {
+    await setupLog();
+    await deleteLogFile();
+    await fileLogging(true);
+    hotfolderLog.verbose("Hotfolder Plugin register");
     const hotfolderAnz = await joplin.settings.value("hotfolderAnz");
 
     if (watchers.length > 0) {
+      hotfolderLog.verbose("Close watchers");
       for (let watcher of watchers) {
         watcher.close().then(() => console.log("Hotfolder closed"));
       }
@@ -33,14 +72,17 @@ export namespace hotfolder {
       } catch (e) {}
 
       if (hotfolderPath.trim() != "") {
+        hotfolderLog.verbose("Register hotfolder nr " + hotfolderNr);
         const importNotebook = await joplin.settings.value(
           "importNotebook" + (hotfolderNr == 0 ? "" : hotfolderNr)
         );
+        hotfolderLog.verbose("Notebook: " + importNotebook);
 
         if (
           importNotebook.trim() !== "" &&
           (await helper.checkNotebookExist(importNotebook.trim())) === false
         ) {
+          hotfolderLog.error("Notebook: " + importNotebook + " dose not exist");
           await hotfolder.showMsg(
             i18n.__(
               "error.notebookNotExist",
@@ -55,13 +97,16 @@ export namespace hotfolder {
             persistent: true,
             awaitWriteFinish: true,
             depth: 0,
-            usePolling: false, // set true to successfully watch files over a network
+            usePolling: true,
           })
           .on("ready", function () {
-            console.log("Newly watched hotfolder path:", this.getWatched());
+            hotfolderLog.info(
+              "Newly watched hotfolder path:",
+              this.getWatched()
+            );
           })
           .on("add", function (path) {
-            console.log("File", path, "has been added");
+            hotfolderLog.verbose("File", path, "has been added");
             hotfolder.processFile(
               path,
               hotfolderNr == 0 ? "" : hotfolderNr.toString()
@@ -91,6 +136,7 @@ export namespace hotfolder {
   }
 
   export async function confLocale() {
+    hotfolderLog.verbose("confLocale");
     const installationDir = await joplin.plugins.installationDir();
     const localesDir = path.join(installationDir, "locales");
     const joplinLocale = await joplin.settings.globalValue("locale");
@@ -108,6 +154,7 @@ export namespace hotfolder {
   }
 
   export async function processFile(file: string, hotfolderNr: string) {
+    hotfolderLog.verbose("processFile (" + hotfolderNr + "): " + file);
     const hotfolderSettings: hotfolderSettings = await settings.getHotfolder(
       hotfolderNr
     );
@@ -182,6 +229,7 @@ export namespace hotfolder {
     folder: string,
     todo: boolean
   ): Promise<any> {
+    hotfolderLog.verbose("importAsText");
     let fileBuffer = null;
     try {
       fileBuffer = fs.readFileSync(file);
@@ -203,6 +251,7 @@ export namespace hotfolder {
     noteTitle: string,
     noteFolder: string
   ): Promise<any> {
+    hotfolderLog.verbose("importAsAttachment");
     const mimeType = await fileType.fromFile(file);
     const fileName = path.basename(file);
 
@@ -226,6 +275,7 @@ export namespace hotfolder {
     file: string,
     fileName: string
   ): Promise<any> {
+    hotfolderLog.verbose("createResources");
     try {
       return await joplin.data.post(["resources"], null, { title: fileName }, [
         {
