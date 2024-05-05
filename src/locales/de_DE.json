@@ -14,7 +14,7 @@
     },
     "importNotebook": {
       "label": "Notizbuch",
-      "description": "Wird kein Notizbuch angegeben, erfolgt der Import in das aktuelle Notizbuch"
+      "description": "Wird kein Notizbuch angegeben, erfolgt der Import in das aktuelle Notizbuch. Unternotizbücher können über Project\\Scans definiert werden"
     },
     "importTags": {
       "label": "Tags",
@@ -22,7 +22,7 @@
     },
     "hotfolderAnz": {
       "label": "Anzahl an Hotfolder",
-      "description": "Die Hotfolder erscheinen auf der linken Seite (Bitte starten Sie Joplin nach einer Änderung neu)"
+      "description": "Zusätzliche Hotfolder erscheinen auf der linken Seite (Bitte starten Sie Joplin nach einer Änderung neu)"
     },
     "extensionsAddTextAsTodo": {
       "label": "Text Notizen als ToDo erstellen",

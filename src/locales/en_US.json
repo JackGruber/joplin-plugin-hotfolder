@@ -14,7 +14,7 @@
     },
     "importNotebook": {
       "label": "Notebook",
-      "description": "If no notebook is specified, the import is made to the current notebook"
+      "description": "If no notebook is specified, the import is made to the current notebook. Subnotebooks can be defined via Project\\Scans"
     },
     "importTags": {
       "label": "Tags",
@@ -22,7 +22,7 @@
     },
     "hotfolderAnz": {
       "label": "Number of Hotfolders",
-      "description": "Sections appear on the left (Please restart Joplin after a change)"
+      "description": "Additional Hotfolder Sections appear on the left (Please restart Joplin after a change)"
     },
     "extensionsAddTextAsTodo": {
       "label": "Add text notes as Todo",
