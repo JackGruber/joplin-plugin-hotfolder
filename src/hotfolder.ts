@@ -176,6 +176,35 @@ class Hotfolder {
               `${hotfolderLogName}: Initial scan complete. Ready for changes`
             );
           })
+          .on("change", async (path) => {
+            this.log.debug(
+              `${hotfolderLogName}: File ${path} has been changed`
+            );
+          })
+          .on("unlink", async (path) => {
+            this.log.debug(
+              `${hotfolderLogName}: File ${path} has been removed`
+            );
+          })
+          .on("addDir", async (path) => {
+            this.log.debug(
+              `${hotfolderLogName}: Directory ${path} has been added`
+            );
+          })
+          .on("unlinkDir", async (path) => {
+            this.log.debug(
+              `${hotfolderLogName}: Directory ${path} has been added`
+            );
+          })
+          .on("error", async (error) => {
+            this.log.error(`${hotfolderLogName}: Watcher error: ${error}`);
+          })
+          .on("raw", async (event, path, details) => {
+            // internal
+            this.log.debug(
+              `${hotfolderLogName}: Raw event info ${event} ${path} ${details}`
+            );
+          })
           .on("add", async (path) => {
             this.log.info(`${hotfolderLogName}: File "${path}" has been added`);
             this.processFile(
