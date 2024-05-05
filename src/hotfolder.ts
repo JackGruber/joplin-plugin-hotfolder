@@ -121,7 +121,6 @@ class Hotfolder {
       let reCheck = 10000;
       const stat = await fs.statSync(processFile.path);
       if (processFile.prevStat != null) {
-        console.log(processFile.prevStat);
         if (
           stat.mtimeMs === processFile.prevStat.mtimeMs &&
           stat.blocks == processFile.prevStat.blocks
