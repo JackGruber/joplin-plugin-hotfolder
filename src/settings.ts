@@ -90,6 +90,43 @@ export namespace settings {
         description: i18n.__("settings.importTags.description"),
       };
 
+      settingsObject[
+        "intervallFileFinished" + (hotfolderNr == 0 ? "" : hotfolderNr)
+      ] = {
+        value: 0,
+        minimum: 0,
+        maximum: 100,
+        type: SettingItemType.Int,
+        section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
+        public: true,
+        advanced: true,
+        label: i18n.__("settings.intervallFileFinished.label"),
+        description: i18n.__("settings.intervallFileFinished.description"),
+      };
+
+      settingsObject["usePolling" + (hotfolderNr == 0 ? "" : hotfolderNr)] = {
+        value: false,
+        type: SettingItemType.Bool,
+        section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
+        public: true,
+        advanced: true,
+        label: i18n.__("settings.usePolling.label"),
+        description: i18n.__("settings.usePolling.description"),
+      };
+
+      settingsObject[
+        "pollingIntervall" + (hotfolderNr == 0 ? "" : hotfolderNr)
+      ] = {
+        value: 100,
+        minimum: 100,
+        type: SettingItemType.Int,
+        section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
+        public: true,
+        advanced: true,
+        label: i18n.__("settings.pollingIntervall.label"),
+        description: i18n.__("settings.pollingIntervall.description"),
+      };
+
       if (hotfolderNr === 0) {
         await joplin.settings.registerSettings({
           hotfolderAnz: {
@@ -160,6 +197,18 @@ export namespace settings {
       "importTags" + hotfolderNrStr
     );
 
+    const intervallFileFinished = await joplin.settings.value(
+      "intervallFileFinished" + hotfolderNrStr
+    );
+
+    const usePolling = await joplin.settings.value(
+      "usePolling" + hotfolderNrStr
+    );
+
+    const pollingIntervall = await joplin.settings.value(
+      "pollingIntervall" + hotfolderNrStr
+    );
+
     return {
       notebookId: notebookId,
       importTags: importTags,
@@ -167,6 +216,9 @@ export namespace settings {
       ignoreFiles: ignoreFiles,
       textAsTodo: extensionsAddTextAsTodo,
       importNotebook: importNotebook,
+      usePolling: usePolling,
+      pollingIntervall: pollingIntervall,
+      intervallFileFinished: intervallFileFinished,
     };
   }
 }

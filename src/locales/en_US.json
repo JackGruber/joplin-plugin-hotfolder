@@ -31,6 +31,18 @@
     "fileLogLevel": {
       "label": "Loglevel",
       "description": "Loglevel for the logfile"
+    },
+    "intervallFileFinished": {
+      "label": "File ready",
+      "description": "Every how many seconds should be checked whether the file in the hotfolder is ready, 0 = Deactivated"
+    },
+    "usePolling": {
+      "label": "Polling",
+      "description": "May be necessary for Hotfolders in the network. Leads to a slightly higher system load"
+    },
+    "pollingIntervall": {
+      "label": "Polling intervall",
+      "description": "Interval in seconds for querying the hotfolder"
     }
   },
   "msg": {

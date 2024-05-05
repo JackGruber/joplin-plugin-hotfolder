@@ -118,22 +118,41 @@ class Hotfolder {
   private async fileFinished(processFile: processFile) {
     this.log.verbose(`Check file finished: ${processFile.path}`);
     try {
-      let reCheck = 10000;
+      let reCheck = 2000;
       const stat = await fs.statSync(processFile.path);
+
+      try {
+        const fsCheck = fs.openSync(processFile.path, "r+");
+        fs.closeSync(fsCheck);
+        this.log.info(`File "${processFile.path}" finished writing`);
+        return true;
+      } catch (e) {
+        this.log.verbose(e.message);
+      }
+
       if (processFile.prevStat != null) {
         if (
           stat.mtimeMs === processFile.prevStat.mtimeMs &&
-          stat.blocks == processFile.prevStat.blocks
+          stat.blocks == processFile.prevStat.blocks &&
+          stat.size == processFile.prevStat.size
         ) {
-          this.log.info(`File "${processFile.path}" finished writing`);
-          return true;
+          try {
+            const fsCheck = fs.openSync(processFile.path, "r+");
+            fs.closeSync(fsCheck);
+            this.log.info(`File "${processFile.path}" finished writing`);
+            return true;
+          } catch (e) {
+            this.log.verbose(e.message);
+          }
         }
+        reCheck = processFile.reCheck * 1000;
       }
       processFile["prevStat"] = stat;
+      this.log.info(`File "${processFile.path}" recheck in ${reCheck}`);
       setTimeout(this.processFile.bind(this), reCheck, processFile);
       return false;
     } catch (e) {
-      this.log.error(`Error for fs stats: ${path}`);
+      this.log.error(`Error for fs stats: ${processFile.path}`);
       this.log.error(e.message);
     }
   }
@@ -165,6 +184,9 @@ class Hotfolder {
       }
 
       if (hotfolderPath.trim() != "") {
+        const hotfolderSettings: hotfolderSettings =
+          await settings.getHotfolder(hotfolderNr);
+
         const importNotebook = await joplin.settings.value(
           "importNotebook" + (hotfolderNr == 0 ? "" : hotfolderNr)
         );
@@ -185,16 +207,24 @@ class Hotfolder {
           );
         }
 
-        this.log.verbose(`${hotfolderLogName}: Setup chokidar`);
+        this.log.verbose(
+          `${hotfolderLogName}: Setup chokidar ${hotfolderPath}`
+        );
 
         const watcher = chokidar.watch(hotfolderPath, {
           persistent: true,
           alwaysStat: true,
           depth: 0,
-          usePolling: false,
-          interval: 500,
-          binaryInterval: 600,
+          usePolling: hotfolderSettings.usePolling,
+          interval: hotfolderSettings.pollingIntervall,
+          binaryInterval: hotfolderSettings.pollingIntervall * 2,
         });
+        this.log.verbose(
+          `${hotfolderLogName}: usePolling: ${hotfolderSettings.usePolling}`
+        );
+        this.log.verbose(
+          `${hotfolderLogName}: interval: ${hotfolderSettings.pollingIntervall}`
+        );
 
         // ignoreInitial
         watcher
@@ -235,23 +265,32 @@ class Hotfolder {
               path: path,
               hotfolderNr: hotfolderNr,
               prevStat: null,
+              reCheck: null,
             });
           });
         this.log.verbose(`${hotfolderLogName}: Add chokidar`);
         this.watchers.push(watcher);
+      } else {
+        this.log.info(`${hotfolderLogName}: No hotfolder path set`);
       }
     }
   }
 
   private async processFile(processFile: processFile) {
-    if ((await this.fileFinished(processFile)) == true) {
+    const hotfolderSettings: hotfolderSettings = await settings.getHotfolder(
+      processFile.hotfolderNr
+    );
+
+    processFile.reCheck = hotfolderSettings.intervallFileFinished;
+
+    if (
+      processFile.reCheck == 0 ||
+      (await this.fileFinished(processFile)) == true
+    ) {
       this.log.verbose(
         `processFile (Hotfolder ${processFile.hotfolderNr}): ${processFile.path}`
       );
-
-      const hotfolderSettings: hotfolderSettings = await settings.getHotfolder(
-        processFile.hotfolderNr
-      );
+      return;
       const fileName = path.basename(processFile.path);
       const ignoreFileUser = await filePattern.match(
         fileName,

@@ -2,6 +2,7 @@ interface processFile {
   path: string;
   hotfolderNr: number;
   prevStat: any;
+  reCheck: number;
 }
 interface hotfolderSettings {
   notebookId: string;
@@ -10,6 +11,9 @@ interface hotfolderSettings {
   importTags: string;
   textAsTodo: boolean;
   importNotebook: string;
+  intervallFileFinished: number;
+  usePolling: boolean;
+  pollingIntervall: number;
 }
 
 export { processFile, hotfolderSettings };

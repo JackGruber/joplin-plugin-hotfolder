@@ -31,6 +31,18 @@
     "fileLogLevel": {
       "label": "Protokollierungsebene",
       "description": "Protokollierungsebene für die Logdatei"
+    },
+    "intervallFileFinished": {
+      "label": "Datei fertig",
+      "description": "All wieviel Sekunden soll geprüft werden ob die Datei im Hotfolder fertig ist, 0 = Deaktiviert"
+    },
+    "usePolling": {
+      "label": "Abfragen",
+      "description": "Kann für Hotfolder im Netzwerk nötig sein. Führt zu einer etwas höheren Systemauslastung"
+    },
+    "pollingIntervall": {
+      "label": "Abfrage intervall",
+      "description": "Intervall in sekunden zur Abfrage des Hotfolders"
     }
   },
   "msg": {
