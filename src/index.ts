@@ -1,19 +1,18 @@
 import joplin from "api";
 import { settings } from "./settings";
-import { hotfolder } from "./hotfolder";
+import { Hotfolder } from "./hotfolder";
+
+const hotfolder = new Hotfolder();
 
 joplin.plugins.register({
   onStart: async function () {
     console.info("Hotfolder plugin started!");
-    await hotfolder.confLocale();
+    await hotfolder.init();
 
     joplin.settings.onChange(async (event: any) => {
       console.log("Settings changed");
-      await hotfolder.register();
+      await hotfolder.loadSettings();
+      await hotfolder.registerHotfolders();
     });
-
-    await hotfolder.createDialogBox();
-    await settings.register();
-    await hotfolder.register();
   },
 });
