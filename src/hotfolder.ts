@@ -177,23 +177,23 @@ class Hotfolder {
             );
           })
           .on("change", async (path) => {
-            this.log.debug(
+            this.log.verbose(
               `${hotfolderLogName}: File ${path} has been changed`
             );
           })
           .on("unlink", async (path) => {
-            this.log.debug(
+            this.log.verbose(
               `${hotfolderLogName}: File ${path} has been removed`
             );
           })
           .on("addDir", async (path) => {
-            this.log.debug(
+            this.log.verbose(
               `${hotfolderLogName}: Directory ${path} has been added`
             );
           })
           .on("unlinkDir", async (path) => {
-            this.log.debug(
-              `${hotfolderLogName}: Directory ${path} has been added`
+            this.log.verbose(
+              `${hotfolderLogName}: Directory ${path} has been removed`
             );
           })
           .on("error", async (error) => {
@@ -201,9 +201,10 @@ class Hotfolder {
           })
           .on("raw", async (event, path, details) => {
             // internal
-            this.log.debug(
-              `${hotfolderLogName}: Raw event info ${event} ${path} ${details}`
+            this.log.verbose(
+              `${hotfolderLogName}: Raw event info ${event} ${path}`
             );
+            this.log.verbose(details);
           })
           .on("add", async (path) => {
             this.log.info(`${hotfolderLogName}: File "${path}" has been added`);
