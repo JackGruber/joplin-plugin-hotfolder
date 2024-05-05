@@ -161,30 +161,30 @@ class Hotfolder {
           );
         }
 
-        this.log.verbose(`Setup chokidar for ${hotfolderLogName}`);
-        let hotfolderWatcher = chokidar
-          .watch(hotfolderPath, {
-            persistent: true,
-            awaitWriteFinish: true,
-            depth: 0,
-            usePolling: true,
-          })
-          .on("ready", function () {
-            console.log("BBBBBBBBB");
-            this.log.info("Newly watched hotfolder path:", this.getWatched());
-          })
-          .on("add", function (path) {
-            console.log("AAAAAAA");
+        this.log.verbose(`${hotfolderLogName}: Setup chokidar`);
+
+        var watcher = chokidar.watch(hotfolderPath, {
+          persistent: true,
+          awaitWriteFinish: true,
+          depth: 0,
+          usePolling: false,
+        });
+
+        watcher
+          .on("ready", async () => {
             this.log.info(
-              `File "${path}" has been added in ${hotfolderLogName}`
+              `${hotfolderLogName}: Initial scan complete. Ready for changes`
             );
+          })
+          .on("add", async (path) => {
+            this.log.info(`${hotfolderLogName}: File "${path}" has been added`);
             this.processFile(
               path,
               hotfolderNr == 0 ? "" : hotfolderNr.toString()
             );
           });
-        this.log.verbose(`Add chokidar for ${hotfolderLogName}`);
-        this.watchers.push(hotfolderWatcher);
+        this.log.verbose(`${hotfolderLogName}: Add chokidar`);
+        this.watchers.push(watcher);
       }
     }
   }
