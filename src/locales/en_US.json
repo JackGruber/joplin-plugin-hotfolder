@@ -30,7 +30,7 @@
     },
     "fileLogLevel": {
       "label": "Loglevel",
-      "description": "Loglevel for the logfile"
+      "description": "Log level for the log file %s"
     },
     "intervallFileFinished": {
       "label": "File ready",

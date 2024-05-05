@@ -30,7 +30,7 @@
     },
     "fileLogLevel": {
       "label": "Protokollierungsebene",
-      "description": "Protokollierungsebene für die Logdatei"
+      "description": "Protokollierungsebene für die Logdatei %s"
     },
     "intervallFileFinished": {
       "label": "Datei fertig",

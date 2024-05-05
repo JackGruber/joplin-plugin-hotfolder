@@ -90,7 +90,7 @@ class Hotfolder {
   }
 
   private async registerSettings() {
-    await settings.register();
+    await settings.register(this.logFile);
     await this.loadSettings();
   }
 

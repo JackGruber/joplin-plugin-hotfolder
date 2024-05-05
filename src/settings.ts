@@ -5,7 +5,7 @@ import { i18n } from "./hotfolder";
 import { hotfolderSettings } from "./type";
 
 export namespace settings {
-  export async function register() {
+  export async function register(logFile: string) {
     let hotfolderNr = 0;
     const settingsObject: Record<string, SettingItem> = {};
     const joplinVersionInfo = await helper.joplinVersionInfo();
@@ -147,7 +147,7 @@ export namespace settings {
             public: true,
             advanced: true,
             label: i18n.__("settings.fileLogLevel.label"),
-            description: i18n.__("settings.fileLogLevel.description"),
+            description: i18n.__("settings.fileLogLevel.description", logFile),
             options: {
               false: "Off",
               verbose: "Verbose",
