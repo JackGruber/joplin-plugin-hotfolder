@@ -7,6 +7,7 @@ import { helper } from "./helper";
 import { hotfolderSettings, settings } from "./settings";
 import { I18n } from "i18n";
 import hotfolderLogging from "electron-log";
+import { processFile } from "./type";
 
 const fs = require("fs-extra");
 
@@ -114,6 +115,30 @@ class Hotfolder {
     await joplin.views.dialogs.open(this.dialogBox);
   }
 
+  private async fileFinished(processFile: processFile) {
+    this.log.verbose(`Check file finished: ${processFile.path}`);
+    try {
+      let reCheck = 10000;
+      const stat = await fs.statSync(processFile.path);
+      if (processFile.prevStat != null) {
+        console.log(processFile.prevStat);
+        if (
+          stat.mtimeMs === processFile.prevStat.mtimeMs &&
+          stat.blocks == processFile.prevStat.blocks
+        ) {
+          this.log.info(`File "${processFile.path}" finished writing`);
+          return true;
+        }
+      }
+      processFile["prevStat"] = stat;
+      setTimeout(this.processFile.bind(this), reCheck, processFile);
+      return false;
+    } catch (e) {
+      this.log.error(`Error for fs stats: ${path}`);
+      this.log.error(e.message);
+    }
+  }
+
   public async registerHotfolders() {
     this.log.verbose("Register Hotfolders");
 
@@ -121,7 +146,7 @@ class Hotfolder {
     if (this.watchers.length > 0) {
       this.log.info("Close open watchers");
       for (let watcher of this.watchers) {
-        watcher.close().then(() => this.log.verbose("Hotfolder closed"));
+        await watcher.close().then(() => this.log.verbose("Hotfolder closed"));
       }
       this.watchers = [];
     }
@@ -163,22 +188,25 @@ class Hotfolder {
 
         this.log.verbose(`${hotfolderLogName}: Setup chokidar`);
 
-        var watcher = chokidar.watch(hotfolderPath, {
+        const watcher = chokidar.watch(hotfolderPath, {
           persistent: true,
-          awaitWriteFinish: true,
+          alwaysStat: true,
           depth: 0,
           usePolling: false,
+          interval: 500,
+          binaryInterval: 600,
         });
 
+        // ignoreInitial
         watcher
           .on("ready", async () => {
             this.log.info(
               `${hotfolderLogName}: Initial scan complete. Ready for changes`
             );
           })
-          .on("change", async (path) => {
+          .on("change", async (path, stats) => {
             this.log.verbose(
-              `${hotfolderLogName}: File ${path} has been changed`
+              `${hotfolderLogName}: File ${path} (${stats.size}) has been changed`
             );
           })
           .on("unlink", async (path) => {
@@ -199,19 +227,16 @@ class Hotfolder {
           .on("error", async (error) => {
             this.log.error(`${hotfolderLogName}: Watcher error: ${error}`);
           })
-          .on("raw", async (event, path, details) => {
-            // internal
-            this.log.verbose(
-              `${hotfolderLogName}: Raw event info ${event} ${path}`
+          .on("add", async (path, stats) => {
+            this.log.info(
+              `${hotfolderLogName}: File "${path}" (${stats.size}) has been added`
             );
-            this.log.verbose(details);
-          })
-          .on("add", async (path) => {
-            this.log.info(`${hotfolderLogName}: File "${path}" has been added`);
-            this.processFile(
-              path,
-              hotfolderNr == 0 ? "" : hotfolderNr.toString()
-            );
+
+            this.processFile({
+              path: path,
+              hotfolderNr: hotfolderNr,
+              prevStat: null,
+            });
           });
         this.log.verbose(`${hotfolderLogName}: Add chokidar`);
         this.watchers.push(watcher);
@@ -219,70 +244,73 @@ class Hotfolder {
     }
   }
 
-  private async processFile(file: string, hotfolderNr: string) {
-    this.log.verbose(`processFile (Hotfolder ${hotfolderNr}): ${file}`);
-    const hotfolderSettings: hotfolderSettings = await settings.getHotfolder(
-      hotfolderNr
-    );
-    const fileName = path.basename(file);
-    const ignoreFileUser = await filePattern.match(
-      fileName,
-      hotfolderSettings.ignoreFiles
-    );
+  private async processFile(processFile: processFile) {
+    if ((await this.fileFinished(processFile)) == true) {
+      this.log.verbose(
+        `processFile (Hotfolder ${processFile.hotfolderNr}): ${processFile.path}`
+      );
 
-    if (ignoreFileUser === 0) {
-      const fileExt = path.extname(file);
-      let newNote = null;
-      let noteTitle = fileName.replace(fileExt, "");
+      const hotfolderSettings: hotfolderSettings = await settings.getHotfolder(
+        processFile.hotfolderNr
+      );
+      const fileName = path.basename(processFile.path);
+      const ignoreFileUser = await filePattern.match(
+        fileName,
+        hotfolderSettings.ignoreFiles
+      );
 
-      this.log.verbose(hotfolderSettings.notebookId);
+      if (ignoreFileUser === 0) {
+        const fileExt = path.extname(processFile.path);
+        let newNote = null;
+        let noteTitle = fileName.replace(fileExt, "");
 
-      if (
-        hotfolderSettings.importNotebook.trim() !== "" &&
-        (await helper.checkNotebookExist(
-          hotfolderSettings.importNotebook.trim()
-        )) === false
-      ) {
-        this.showMsg(
-          i18n.__(
-            "msg.error.notebookNotExist",
-            hotfolderSettings.importNotebook.trim(),
-            parseInt(hotfolderNr) == 0 ? "" : parseInt(hotfolderNr) + 1
-          )
-        );
-      }
+        if (
+          hotfolderSettings.importNotebook.trim() !== "" &&
+          (await helper.checkNotebookExist(
+            hotfolderSettings.importNotebook.trim()
+          )) === false
+        ) {
+          this.showMsg(
+            i18n.__(
+              "msg.error.notebookNotExist",
+              hotfolderSettings.importNotebook.trim(),
+              processFile.hotfolderNr == 0 ? "" : processFile.hotfolderNr + 1
+            )
+          );
+        }
 
-      if (
-        hotfolderSettings.extensionsAddAsText
-          .split(/\s*,\s*/)
-          .indexOf(fileExt) !== -1
-      ) {
-        this.log.verbose("Import as Text");
-        newNote = await this.importAsText(
-          file,
-          noteTitle,
-          hotfolderSettings.notebookId,
-          hotfolderSettings.textAsTodo
-        );
+        if (
+          hotfolderSettings.extensionsAddAsText
+            .split(/\s*,\s*/)
+            .indexOf(fileExt) !== -1
+        ) {
+          this.log.verbose("Import as Text");
+          newNote = await this.importAsText(
+            processFile.path,
+            noteTitle,
+            hotfolderSettings.notebookId,
+            hotfolderSettings.textAsTodo
+          );
+        } else {
+          this.log.verbose("Import as attachment");
+          newNote = await this.importAsAttachment(
+            processFile.path,
+            noteTitle,
+            hotfolderSettings.notebookId
+          );
+        }
+
+        await helper.tagNote(newNote.id, hotfolderSettings.importTags);
+
+        try {
+          fs.removeSync(processFile.path);
+        } catch (e) {
+          this.log.error(e);
+          return;
+        }
       } else {
-        this.log.verbose("Import as attachment");
-        newNote = await this.importAsAttachment(
-          file,
-          noteTitle,
-          hotfolderSettings.notebookId
-        );
+        this.log.verbose(`File is ignored! ignoreFileUser: ${ignoreFileUser}`);
       }
-
-      await helper.tagNote(newNote.id, hotfolderSettings.importTags);
-
-      try {
-        fs.removeSync(file);
-      } catch (e) {
-        this.log.error(e);
-        return;
-      }
-    } else {
-      this.log.verbose(`File is ignored! ignoreFileUser: ${ignoreFileUser}`);
     }
   }
 
