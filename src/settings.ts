@@ -2,15 +2,7 @@ import joplin from "api";
 import { SettingItem, SettingItemType, SettingItemSubType } from "api/types";
 import { helper } from "./helper";
 import { i18n } from "./hotfolder";
-
-export interface hotfolderSettings {
-  notebookId: string;
-  extensionsAddAsText: string;
-  ignoreFiles: string;
-  importTags: string;
-  textAsTodo: boolean;
-  importNotebook: string;
-}
+import { hotfolderSettings } from "./type";
 
 export namespace settings {
   export async function register() {

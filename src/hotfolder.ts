@@ -4,10 +4,10 @@ import { filePattern } from "./filePattern";
 import * as path from "path";
 import * as fileType from "file-type";
 import { helper } from "./helper";
-import { hotfolderSettings, settings } from "./settings";
+import { settings } from "./settings";
 import { I18n } from "i18n";
 import hotfolderLogging from "electron-log";
-import { processFile } from "./type";
+import { hotfolderSettings, processFile } from "./type";
 
 const fs = require("fs-extra");
 
