@@ -290,7 +290,7 @@ class Hotfolder {
       this.log.verbose(
         `processFile (Hotfolder ${processFile.hotfolderNr}): ${processFile.path}`
       );
-      return;
+
       const fileName = path.basename(processFile.path);
       const ignoreFileUser = await filePattern.match(
         fileName,
