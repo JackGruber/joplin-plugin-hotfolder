@@ -10,6 +10,8 @@ A plugin to Monitor a locale folder and import the files as a new note.
 - [Installation](#installation)
     - [Automatic](#automatic)
     - [Manual](#manual)
+        - [Manual via file system](#manual-via-file-system)
+        - [Manual via file via GUI](#manual-via-file-via-gui)
 - [Usage](#usage)
 - [Options](#options)
 - [Changelog](#changelog)
@@ -28,10 +30,20 @@ A plugin to Monitor a locale folder and import the files as a new note.
 
 ### Manual
 
+#### Manual via file system
+
 - Download the latest released JPL package (`io.github.jackgruber.hotfolder.jpl`) from [here](https://github.com/JackGruber/joplin-plugin-hotfolder/releases/latest)
 - Close Joplin
 - Copy the downloaded JPL package in your profile `plugins` folder
 - Start Joplin
+
+#### Manual via file via GUI
+
+- Download the latest released JPL package (`io.github.jackgruber.hotfolder.jpl`) from [here](https://github.com/JackGruber/joplin-plugin-hotfolder/releases/latest)
+- Go to `Tools > Options > Plugins`
+- Click on the gear wheel and select `Install from file`
+- Select the downloaded JPL file
+- Restart Joplin
 
 ## Usage
 
