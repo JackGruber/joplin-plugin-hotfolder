@@ -10,6 +10,7 @@
   "repository_url": "https://github.com/JackGruber/joplin-plugin-hotfolder",
   "keywords": ["hotfolder", "import", "monitor"],
   "categories": ["productivity", "files"],
+  "platforms": ["desktop"],
   "screenshots": [
     {
       "src": "img/main.png",
