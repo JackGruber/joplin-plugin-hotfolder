@@ -2,18 +2,10 @@ import joplin from "api";
 import { SettingItem, SettingItemType, SettingItemSubType } from "api/types";
 import { helper } from "./helper";
 import { i18n } from "./hotfolder";
-
-export interface hotfolderSettings {
-  notebookId: string;
-  extensionsAddAsText: string;
-  ignoreFiles: string;
-  importTags: string;
-  textAsTodo: boolean;
-  importNotebook: string;
-}
+import { hotfolderSettings } from "./type";
 
 export namespace settings {
-  export async function register() {
+  export async function register(logFile: string) {
     let hotfolderNr = 0;
     const settingsObject: Record<string, SettingItem> = {};
     const joplinVersionInfo = await helper.joplinVersionInfo();
@@ -35,8 +27,8 @@ export namespace settings {
           type: SettingItemType.String,
           section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
           public: true,
-          label: i18n.__("settings.hotfolderPath"),
-          description: i18n.__("settings.hotfolderPathDescription"),
+          label: i18n.__("settings.hotfolderPath.label"),
+          description: i18n.__("settings.hotfolderPath.description"),
         };
       // Add DirectoryPath selector for newer Joplin versions
       if (
@@ -53,8 +45,8 @@ export namespace settings {
         type: SettingItemType.String,
         section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
         public: true,
-        label: i18n.__("settings.ignoreFiles"),
-        description: i18n.__("settings.ignoreFilesDescription"),
+        label: i18n.__("settings.ignoreFiles.label"),
+        description: i18n.__("settings.ignoreFiles.description"),
       };
 
       settingsObject[
@@ -64,8 +56,8 @@ export namespace settings {
         type: SettingItemType.String,
         section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
         public: true,
-        label: i18n.__("settings.extensionsAddAsText"),
-        description: i18n.__("settings.extensionsAddAsTextDescription"),
+        label: i18n.__("settings.extensionsAddAsText.label"),
+        description: i18n.__("settings.extensionsAddAsText.description"),
       };
 
       settingsObject[
@@ -75,8 +67,8 @@ export namespace settings {
         type: SettingItemType.Bool,
         section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
         public: true,
-        label: i18n.__("settings.extensionsAddTextAsTodo"),
-        description: i18n.__("settings.extensionsAddTextAsTodoDescription"),
+        label: i18n.__("settings.extensionsAddTextAsTodo.label"),
+        description: i18n.__("settings.extensionsAddTextAsTodo.description"),
       };
 
       settingsObject["importNotebook" + (hotfolderNr == 0 ? "" : hotfolderNr)] =
@@ -85,8 +77,8 @@ export namespace settings {
           type: SettingItemType.String,
           section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
           public: true,
-          label: i18n.__("settings.importNotebook"),
-          description: i18n.__("settings.importNotebookDescription"),
+          label: i18n.__("settings.importNotebook.label"),
+          description: i18n.__("settings.importNotebook.description"),
         };
 
       settingsObject["importTags" + (hotfolderNr == 0 ? "" : hotfolderNr)] = {
@@ -94,8 +86,45 @@ export namespace settings {
         type: SettingItemType.String,
         section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
         public: true,
-        label: i18n.__("settings.importTags"),
-        description: i18n.__("settings.importTagsDescription"),
+        label: i18n.__("settings.importTags.label"),
+        description: i18n.__("settings.importTags.description"),
+      };
+
+      settingsObject[
+        "intervallFileFinished" + (hotfolderNr == 0 ? "" : hotfolderNr)
+      ] = {
+        value: 0,
+        minimum: 0,
+        maximum: 100,
+        type: SettingItemType.Int,
+        section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
+        public: true,
+        advanced: true,
+        label: i18n.__("settings.intervallFileFinished.label"),
+        description: i18n.__("settings.intervallFileFinished.description"),
+      };
+
+      settingsObject["usePolling" + (hotfolderNr == 0 ? "" : hotfolderNr)] = {
+        value: false,
+        type: SettingItemType.Bool,
+        section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
+        public: true,
+        advanced: true,
+        label: i18n.__("settings.usePolling.label"),
+        description: i18n.__("settings.usePolling.description"),
+      };
+
+      settingsObject[
+        "pollingIntervall" + (hotfolderNr == 0 ? "" : hotfolderNr)
+      ] = {
+        value: 100,
+        minimum: 100,
+        type: SettingItemType.Int,
+        section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
+        public: true,
+        advanced: true,
+        label: i18n.__("settings.pollingIntervall.label"),
+        description: i18n.__("settings.pollingIntervall.description"),
       };
 
       if (hotfolderNr === 0) {
@@ -107,8 +136,25 @@ export namespace settings {
             type: SettingItemType.Int,
             section: "hotfolderSection",
             public: true,
-            label: i18n.__("settings.hotfolderAnz"),
-            description: i18n.__("settings.hotfolderAnzDescription"),
+            label: i18n.__("settings.hotfolderAnz.label"),
+            description: i18n.__("settings.hotfolderAnz.description"),
+          },
+          fileLogLevel: {
+            value: "error",
+            type: SettingItemType.String,
+            section: "hotfolderSection",
+            isEnum: true,
+            public: true,
+            advanced: true,
+            label: i18n.__("settings.fileLogLevel.label"),
+            description: i18n.__("settings.fileLogLevel.description", logFile),
+            options: {
+              false: "Off",
+              verbose: "Verbose",
+              info: "Info",
+              warn: "Warning",
+              error: "Error",
+            },
           },
         });
       }
@@ -120,30 +166,48 @@ export namespace settings {
   }
 
   export async function getHotfolder(
-    hotfolderNr: string
+    hotfolderNr: number
   ): Promise<hotfolderSettings> {
+    let hotfolderNrStr = "";
+    if (hotfolderNr != 0) {
+      hotfolderNrStr = String(hotfolderNr);
+    }
     const ignoreFiles = await joplin.settings.value(
-      "ignoreFiles" + hotfolderNr
+      "ignoreFiles" + hotfolderNrStr
     );
 
     const extensionsAddAsText = await joplin.settings.value(
-      "extensionsAddAsText" + hotfolderNr
+      "extensionsAddAsText" + hotfolderNrStr
     );
 
     const extensionsAddTextAsTodo = await joplin.settings.value(
-      "extensionsAddTextAsTodo" + hotfolderNr
+      "extensionsAddTextAsTodo" + hotfolderNrStr
     );
 
     const selectedFolder = await joplin.workspace.selectedFolder();
     const importNotebook = await joplin.settings.value(
-      "importNotebook" + hotfolderNr
+      "importNotebook" + hotfolderNrStr
     );
     let notebookId = await helper.getNotebookId(importNotebook, false);
     if (notebookId == null) {
       notebookId = selectedFolder.id;
     }
 
-    const importTags = await joplin.settings.value("importTags" + hotfolderNr);
+    const importTags = await joplin.settings.value(
+      "importTags" + hotfolderNrStr
+    );
+
+    const intervallFileFinished = await joplin.settings.value(
+      "intervallFileFinished" + hotfolderNrStr
+    );
+
+    const usePolling = await joplin.settings.value(
+      "usePolling" + hotfolderNrStr
+    );
+
+    const pollingIntervall = await joplin.settings.value(
+      "pollingIntervall" + hotfolderNrStr
+    );
 
     return {
       notebookId: notebookId,
@@ -152,6 +216,9 @@ export namespace settings {
       ignoreFiles: ignoreFiles,
       textAsTodo: extensionsAddTextAsTodo,
       importNotebook: importNotebook,
+      usePolling: usePolling,
+      pollingIntervall: pollingIntervall,
+      intervallFileFinished: intervallFileFinished,
     };
   }
 }

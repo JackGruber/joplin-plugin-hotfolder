@@ -2,6 +2,11 @@
 
 ## not released
 
+## v1.2.0 (2024-05-21)
+
+- Add: Option `Polling` for hotfolders, which is necessary for some network drives
+- Fix: Add option `File ready` to check whether a file has been written or not yet (Necessary for some use cases) #36
+
 ## v1.1.1 (2024-01-11)
 
 - Add: Screenshots / icon for [https://joplinapp.org/plugins/](https://joplinapp.org/plugins/)

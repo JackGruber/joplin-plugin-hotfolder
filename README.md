@@ -1,8 +1,28 @@
-# Joplin Hotfolder Plugin <img src="img/icon_32.png">
+<!-- markdownlint-disable MD033 -->
+<!-- markdownlint-disable MD028 -->
+<!-- markdownlint-disable MD007 -->
+<!-- markdownlint-disable MD045 -->
+
+# Joplin Plugin: Hotfolder <img src="img/icon_32.png">
 
 A plugin to Monitor a locale folder and import the files as a new note.
 
 <img src="img/main.png">
+
+<!-- prettier-ignore-start -->
+<!-- TOC depthfrom:2 orderedlist:false -->
+
+- [Installation](#installation)
+    - [Automatic](#automatic)
+    - [Manual](#manual)
+        - [Manual via file system](#manual-via-file-system)
+        - [Manual via file via GUI](#manual-via-file-via-gui)
+- [Usage](#usage)
+- [Options](#options)
+- [Changelog](#changelog)
+
+<!-- /TOC -->
+<!-- prettier-ignore-end -->
 
 ## Installation
 
@@ -15,10 +35,20 @@ A plugin to Monitor a locale folder and import the files as a new note.
 
 ### Manual
 
+#### Manual via file system
+
 - Download the latest released JPL package (`io.github.jackgruber.hotfolder.jpl`) from [here](https://github.com/JackGruber/joplin-plugin-hotfolder/releases/latest)
 - Close Joplin
 - Copy the downloaded JPL package in your profile `plugins` folder
 - Start Joplin
+
+#### Manual via file via GUI
+
+- Download the latest released JPL package (`io.github.jackgruber.hotfolder.jpl`) from [here](https://github.com/JackGruber/joplin-plugin-hotfolder/releases/latest)
+- Go to `Tools > Options > Plugins`
+- Click on the gear wheel and select `Install from file`
+- Select the downloaded JPL file
+- Restart Joplin
 
 ## Usage
 
@@ -32,23 +62,6 @@ After processing the file are deleted from the hotfolder.
 
 Go to `Tools > Options > Backup`
 
-| Option              | Description                                                                                                                                                                          | Default                           |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------- |
-| Hotfolder Path      | Files from this path will be imported as new notes.                                                                                                                                  |                                   |
-| Ignore Files        | Comma separated list of files to be ignored.<br>Wildcards (`*`) or RegExp possible.<br>To ignore a file with a `*` in the name, escape the `*` with a `\`, example: `test\*file.log` | `.*` (Dot files like `.DS_Store`) |
-| Add as text         | Files with this file extension are imported as text and not as attachment.                                                                                                           | .txt, .md                         |
-| Add text as Todo    | When checked, text notes will be imported as Todo type notes.                                                                                                                        |                                   |
-| Notebook            | In which notebook should the note be created. <br> Subnotebooks can be defined via `Project\Scans`.                                                                                  | Current selected Notebook         |
-| Tag                 | Comma separated list of tags to be added to the note.                                                                                                                                |                                   |
-| Numer of Hotfolders | How many hot folders should be defined (Only available in the first hotfolder configuration).                                                                                        | 1                                 |
-
 ## Changelog
 
 See [CHANGELOG.md](CHANGELOG.md)
-
-## Links
-
-- [Joplin - Getting started with plugin development](https://joplinapp.org/api/get_started/plugins/)
-- [Joplin - Plugin API reference](https://joplinapp.org/api/references/plugin_api/classes/joplin.html)
-- [Joplin - Data API reference](https://joplinapp.org/api/references/rest_api/)
-- [Joplin - Plugin examples](https://github.com/laurent22/joplin/tree/dev/packages/app-cli/tests/support/plugins)
