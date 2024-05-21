@@ -1,3 +1,8 @@
+<!-- markdownlint-disable MD033 -->
+<!-- markdownlint-disable MD028 -->
+<!-- markdownlint-disable MD007 -->
+<!-- markdownlint-disable MD045 -->
+
 # Joplin Plugin: Hotfolder <img src="img/icon_32.png">
 
 A plugin to Monitor a locale folder and import the files as a new note.
