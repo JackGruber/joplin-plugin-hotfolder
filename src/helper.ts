@@ -77,6 +77,9 @@ export namespace helper {
 
     if (addTags != null) {
       for (let tag of addTags) {
+        if (tag.trim() == "") {
+          continue;
+        }
         let tagId = await getTagId(tag);
         if (tagId != null) {
           try {

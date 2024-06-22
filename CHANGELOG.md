@@ -2,6 +2,8 @@
 
 ## not released
 
+- Fix: Don't add empty tag when tag ends with `,` or cointains several `,` directly behind each other #37
+
 ## v1.2.0 (2024-05-21)
 
 - Add: Option `Polling` for hotfolders, which is necessary for some network drives
