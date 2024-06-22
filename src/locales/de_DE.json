@@ -34,7 +34,7 @@
     },
     "intervallFileFinished": {
       "label": "Datei fertig",
-      "description": "All wieviel Sekunden soll geprüft werden ob die Datei im Hotfolder fertig ist (Prüft die Datei größe und Dateilock zusätzlich), 0 = Deaktiviert"
+      "description": "All wieviel Sekunden soll geprüft werden ob die Datei im Hotfolder fertig ist (Prüft die Datei größe und Dateilock zusätzlich)"
     },
     "usePolling": {
       "label": "Abfragen",
