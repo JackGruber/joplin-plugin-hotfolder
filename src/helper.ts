@@ -63,7 +63,6 @@ export namespace helper {
   }
 
   export async function tagNote(noteId: string, tags: string) {
-    this.log.verbose("tage note");
     let addTags = null;
     if (tags.trim() !== "") {
       addTags = tags.split(/\s*,\s*/);
@@ -78,8 +77,8 @@ export namespace helper {
               id: noteId,
             });
           } catch (e) {
-            this.log.error("note tagging error");
-            this.log.error(e);
+            console.error("note tagging error");
+            console.error(e);
           }
         }
       }
@@ -102,8 +101,8 @@ export namespace helper {
     } else if (query.items.length === 1) {
       return query.items[0].id;
     } else {
-      this.log.error("More than one tag match!");
-      this.log.error(query);
+      console.error("More than one tag match!");
+      console.error(query);
       return null;
     }
   }
