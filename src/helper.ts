@@ -1,5 +1,12 @@
 import joplin from "api";
 
+class HelperError extends Error {
+  constructor(name, message) {
+    super(message);
+    this.name = name;
+  }
+}
+
 export namespace helper {
   export async function joplinVersionInfo(): Promise<any> {
     try {
@@ -77,8 +84,10 @@ export namespace helper {
               id: noteId,
             });
           } catch (e) {
-            console.error("note tagging error");
-            console.error(e);
+            throw new HelperError(
+              "tagNote",
+              "note tagging error\n" + e.message
+            );
           }
         }
       }
@@ -101,9 +110,9 @@ export namespace helper {
     } else if (query.items.length === 1) {
       return query.items[0].id;
     } else {
-      console.error("More than one tag match!");
+      console.error("");
       console.error(query);
-      return null;
+      throw new HelperError("getTagId", "More than one tag match!\n" + query);
     }
   }
 
