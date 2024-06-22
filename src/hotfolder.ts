@@ -378,6 +378,9 @@ class Hotfolder {
       );
     }
 
+    this.log.verbose(
+      `tagNote: ${newNote.id} with ${hotfolderSettings.importTags}`
+    );
     try {
       await helper.tagNote(newNote.id, hotfolderSettings.importTags);
     } catch (e) {

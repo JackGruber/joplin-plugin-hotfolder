@@ -96,23 +96,32 @@ export namespace helper {
 
   export async function getTagId(tag: string): Promise<string> {
     tag = tag.trim();
-    var query = await joplin.data.get(["search"], {
-      query: tag,
-      type: "tag",
-      fields: "id,title",
-    });
+    try {
+      var query = await joplin.data.get(["search"], {
+        query: tag,
+        type: "tag",
+        fields: "id,title",
+      });
+    } catch (e) {
+      throw new HelperError("getTagId", `search tag: ${tag}:` + e.message);
+    }
+
     if (query.items.length === 0) {
       console.log("Create tag '" + tag + "'");
-      const newTag = await joplin.data.post(["tags"], null, {
-        title: tag,
-      });
-      return newTag.id;
+      try {
+        const newTag = await joplin.data.post(["tags"], null, {
+          title: tag,
+        });
+        return newTag.id;
+      } catch (e) {
+        throw new HelperError("getTagId", `create tag: ${tag}:` + e.message);
+      }
     } else if (query.items.length === 1) {
       return query.items[0].id;
     } else {
-      console.error("");
+      console.error("More than one tag match for: " + tag);
       console.error(query);
-      throw new HelperError("getTagId", "More than one tag match!\n" + query);
+      throw new HelperError("getTagId", `More than one tag match for: ${tag}`);
     }
   }
 
