@@ -322,7 +322,6 @@ class Hotfolder {
             .split(/\s*,\s*/)
             .indexOf(fileExt) !== -1
         ) {
-          this.log.verbose("Import as Text");
           newNote = await this.importAsText(
             processFile.path,
             noteTitle,
@@ -330,7 +329,6 @@ class Hotfolder {
             hotfolderSettings.textAsTodo
           );
         } else {
-          this.log.verbose("Import as attachment");
           newNote = await this.importAsAttachment(
             processFile.path,
             noteTitle,
