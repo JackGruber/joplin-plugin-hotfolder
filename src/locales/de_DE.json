@@ -42,7 +42,7 @@
     },
     "pollingIntervall": {
       "label": "Abfrage intervall",
-      "description": "Intervall in sekunden zur Abfrage des Hotfolders"
+      "description": "Intervall in millisekunden zur Abfrage des Hotfolders"
     }
   },
   "msg": {
