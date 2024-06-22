@@ -3,6 +3,7 @@
 ## not released
 
 - Fix: Don't add empty tag when tag ends with `,` or cointains several `,` directly behind each other #37
+- Fix: Tagging did not work if multiple tags in Joplin started the same as the tag that should be added #37
 
 ## v1.2.0 (2024-05-21)
 
