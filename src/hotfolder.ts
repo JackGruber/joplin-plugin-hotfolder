@@ -40,6 +40,31 @@ class Hotfolder {
     await this.registerHotfolders();
   }
 
+  private async logSettings() {
+    this.log.verbose("Settings:");
+    this.log.verbose("hotfolderAnz:" + this.hotfolderAnz);
+    for (let hotfolderNr = 0; hotfolderNr < this.hotfolderAnz; hotfolderNr++) {
+      this.log.verbose("=================");
+      let hotfolderPath = "";
+      try {
+        hotfolderPath = await joplin.settings.value(
+          "hotfolderPath" + (hotfolderNr == 0 ? "" : hotfolderNr)
+        );
+      } catch (e) {
+        this.log.verbose(`Error on load hotfolderPath`);
+      }
+
+      this.log.verbose(`Hotfolder (${hotfolderNr}): ${hotfolderPath}`);
+      const hotfolderSettings: hotfolderSettings = await settings.getHotfolder(
+        hotfolderNr
+      );
+      for (const setting in hotfolderSettings) {
+        this.log.verbose(setting + ": " + hotfolderSettings[setting]);
+      }
+    }
+    this.log.verbose("=================");
+  }
+
   private async setupLog() {
     const logFormat = "[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}] {text}";
     this.log.transports.file.level = false;
@@ -158,6 +183,8 @@ class Hotfolder {
   }
 
   public async registerHotfolders() {
+    await this.logSettings();
+
     this.log.verbose("Register Hotfolders");
 
     // Close already watched folders
