@@ -4,7 +4,7 @@
 
 ## v1.2.1 (2024-11-26)
 
-- Fix: Don't add empty tag when tag ends with `,` or cointains several `,` directly behind each other #37
+- Fix: Don't add empty tag when tag ends with `,` or contains several `,` directly behind each other #37
 - Fix: Tagging did not work if multiple tags in Joplin started the same as the tag that should be added #37
 - Fix: `File ready` is automatically set to `2` if it is still configured to `0` to prevent import errors with 0 byte files (File is in use by other process)
 
