@@ -203,6 +203,10 @@ export namespace settings {
     // Fix old value, where 0 was possible
     if (intervallFileFinished < 1) {
       intervallFileFinished = 1;
+      await joplin.settings.setValue(
+        "intervallFileFinished" + hotfolderNrStr,
+        intervallFileFinished
+      );
     }
 
     const usePolling = await joplin.settings.value(
