@@ -40,6 +40,31 @@ class Hotfolder {
     await this.registerHotfolders();
   }
 
+  private async logSettings() {
+    this.log.verbose("Settings:");
+    this.log.verbose("hotfolderAnz:" + this.hotfolderAnz);
+    for (let hotfolderNr = 0; hotfolderNr < this.hotfolderAnz; hotfolderNr++) {
+      this.log.verbose("=================");
+      let hotfolderPath = "";
+      try {
+        hotfolderPath = await joplin.settings.value(
+          "hotfolderPath" + (hotfolderNr == 0 ? "" : hotfolderNr)
+        );
+      } catch (e) {
+        this.log.verbose(`Error on load hotfolderPath`);
+      }
+
+      this.log.verbose(`Hotfolder (${hotfolderNr}): ${hotfolderPath}`);
+      const hotfolderSettings: hotfolderSettings = await settings.getHotfolder(
+        hotfolderNr
+      );
+      for (const setting in hotfolderSettings) {
+        this.log.verbose(setting + ": " + hotfolderSettings[setting]);
+      }
+    }
+    this.log.verbose("=================");
+  }
+
   private async setupLog() {
     const logFormat = "[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}] {text}";
     this.log.transports.file.level = false;
@@ -117,47 +142,62 @@ class Hotfolder {
 
   private async fileFinished(processFile: processFile) {
     this.log.verbose(`Check file finished: ${processFile.path}`);
+    let stat = null;
+
     try {
-      let reCheck = 2000;
-      const stat = await fs.statSync(processFile.path);
-
-      try {
-        const fsCheck = fs.openSync(processFile.path, "r+");
-        fs.closeSync(fsCheck);
-        this.log.info(`File "${processFile.path}" finished writing`);
-        return true;
-      } catch (e) {
-        this.log.verbose(e.message);
-      }
-
-      if (processFile.prevStat != null) {
-        if (
-          stat.mtimeMs === processFile.prevStat.mtimeMs &&
-          stat.blocks == processFile.prevStat.blocks &&
-          stat.size == processFile.prevStat.size
-        ) {
-          try {
-            const fsCheck = fs.openSync(processFile.path, "r+");
-            fs.closeSync(fsCheck);
-            this.log.info(`File "${processFile.path}" finished writing`);
-            return true;
-          } catch (e) {
-            this.log.verbose(e.message);
-          }
-        }
-        reCheck = processFile.reCheck * 1000;
-      }
-      processFile["prevStat"] = stat;
-      this.log.info(`File "${processFile.path}" recheck in ${reCheck}`);
-      setTimeout(this.processFile.bind(this), reCheck, processFile);
-      return false;
+      stat = await fs.statSync(processFile.path);
     } catch (e) {
       this.log.error(`Error for fs stats: ${processFile.path}`);
       this.log.error(e.message);
+      return false;
     }
+
+    if (processFile.prevStat != null) {
+      if (
+        stat.mtimeMs === processFile.prevStat.mtimeMs &&
+        stat.blocks == processFile.prevStat.blocks &&
+        stat.size == processFile.prevStat.size
+      ) {
+        this.log.verbose(`File "${processFile.path}" finished via stats`);
+        processFile["prevStat"] = stat;
+      } else {
+        processFile["prevStat"] = stat;
+        await this.setFileRecheck(processFile);
+        return false;
+      }
+    } else {
+      processFile["prevStat"] = stat;
+      await this.setFileRecheck(processFile);
+      return false;
+    }
+
+    try {
+      const fsCheck = fs.openSync(processFile.path, "r+");
+      fs.closeSync(fsCheck);
+      this.log.info(`File "${processFile.path}" finished writing`);
+      return true;
+    } catch (e) {
+      this.log.verbose(e.message);
+    }
+
+    await this.setFileRecheck(processFile);
+    return false;
+  }
+
+  private async setFileRecheck(processFile: processFile) {
+    this.log.verbose(
+      `File "${processFile.path}" recheck in ${processFile.intervallFileFinished}`
+    );
+    setTimeout(
+      this.processFile.bind(this),
+      processFile.intervallFileFinished * 1000,
+      processFile
+    );
   }
 
   public async registerHotfolders() {
+    await this.logSettings();
+
     this.log.verbose("Register Hotfolders");
 
     // Close already watched folders
@@ -265,7 +305,7 @@ class Hotfolder {
               path: path,
               hotfolderNr: hotfolderNr,
               prevStat: null,
-              reCheck: null,
+              intervallFileFinished: hotfolderSettings.intervallFileFinished,
             });
           });
         this.log.verbose(`${hotfolderLogName}: Add chokidar`);
@@ -281,74 +321,79 @@ class Hotfolder {
       processFile.hotfolderNr
     );
 
-    processFile.reCheck = hotfolderSettings.intervallFileFinished;
+    if (!(await this.fileFinished(processFile))) {
+      return;
+    }
+
+    this.log.verbose(
+      `processFile (Hotfolder ${processFile.hotfolderNr}): ${processFile.path}`
+    );
+
+    const fileName = path.basename(processFile.path);
+    const ignoreFileUser = await filePattern.match(
+      fileName,
+      hotfolderSettings.ignoreFiles
+    );
+
+    if (ignoreFileUser !== 0) {
+      this.log.verbose(`File is ignored! ignoreFileUser: ${ignoreFileUser}`);
+      return;
+    }
+
+    const fileExt = path.extname(processFile.path);
+    let newNote = null;
+    let noteTitle = fileName.replace(fileExt, "");
 
     if (
-      processFile.reCheck == 0 ||
-      (await this.fileFinished(processFile)) == true
+      hotfolderSettings.importNotebook.trim() !== "" &&
+      (await helper.checkNotebookExist(
+        hotfolderSettings.importNotebook.trim()
+      )) === false
     ) {
-      this.log.verbose(
-        `processFile (Hotfolder ${processFile.hotfolderNr}): ${processFile.path}`
+      this.showMsg(
+        i18n.__(
+          "msg.error.notebookNotExist",
+          hotfolderSettings.importNotebook.trim(),
+          processFile.hotfolderNr == 0 ? "" : processFile.hotfolderNr + 1
+        )
       );
+    }
 
-      const fileName = path.basename(processFile.path);
-      const ignoreFileUser = await filePattern.match(
-        fileName,
-        hotfolderSettings.ignoreFiles
+    if (
+      hotfolderSettings.extensionsAddAsText
+        .split(/\s*,\s*/)
+        .indexOf(fileExt) !== -1
+    ) {
+      newNote = await this.importAsText(
+        processFile.path,
+        noteTitle,
+        hotfolderSettings.notebookId,
+        hotfolderSettings.textAsTodo
       );
+    } else {
+      newNote = await this.importAsAttachment(
+        processFile.path,
+        noteTitle,
+        hotfolderSettings.notebookId
+      );
+    }
 
-      if (ignoreFileUser === 0) {
-        const fileExt = path.extname(processFile.path);
-        let newNote = null;
-        let noteTitle = fileName.replace(fileExt, "");
+    this.log.verbose(
+      `tagNote: ${newNote.id} with ${hotfolderSettings.importTags}`
+    );
+    try {
+      await helper.tagNote(newNote.id, hotfolderSettings.importTags);
+    } catch (e) {
+      this.log.error(e);
+      return;
+    }
 
-        if (
-          hotfolderSettings.importNotebook.trim() !== "" &&
-          (await helper.checkNotebookExist(
-            hotfolderSettings.importNotebook.trim()
-          )) === false
-        ) {
-          this.showMsg(
-            i18n.__(
-              "msg.error.notebookNotExist",
-              hotfolderSettings.importNotebook.trim(),
-              processFile.hotfolderNr == 0 ? "" : processFile.hotfolderNr + 1
-            )
-          );
-        }
-
-        if (
-          hotfolderSettings.extensionsAddAsText
-            .split(/\s*,\s*/)
-            .indexOf(fileExt) !== -1
-        ) {
-          this.log.verbose("Import as Text");
-          newNote = await this.importAsText(
-            processFile.path,
-            noteTitle,
-            hotfolderSettings.notebookId,
-            hotfolderSettings.textAsTodo
-          );
-        } else {
-          this.log.verbose("Import as attachment");
-          newNote = await this.importAsAttachment(
-            processFile.path,
-            noteTitle,
-            hotfolderSettings.notebookId
-          );
-        }
-
-        await helper.tagNote(newNote.id, hotfolderSettings.importTags);
-
-        try {
-          fs.removeSync(processFile.path);
-        } catch (e) {
-          this.log.error(e);
-          return;
-        }
-      } else {
-        this.log.verbose(`File is ignored! ignoreFileUser: ${ignoreFileUser}`);
-      }
+    this.log.verbose(`Remove: ${processFile.path}`);
+    try {
+      fs.removeSync(processFile.path);
+    } catch (e) {
+      this.log.error(e);
+      return;
     }
   }
 

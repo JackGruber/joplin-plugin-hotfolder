@@ -1,5 +1,12 @@
 import joplin from "api";
 
+class HelperError extends Error {
+  constructor(name, message) {
+    super(message);
+    this.name = name;
+  }
+}
+
 export namespace helper {
   export async function joplinVersionInfo(): Promise<any> {
     try {
@@ -70,6 +77,9 @@ export namespace helper {
 
     if (addTags != null) {
       for (let tag of addTags) {
+        if (tag.trim() == "") {
+          continue;
+        }
         let tagId = await getTagId(tag);
         if (tagId != null) {
           try {
@@ -77,33 +87,54 @@ export namespace helper {
               id: noteId,
             });
           } catch (e) {
-            console.error("note tagging error");
-            console.error(e);
+            throw new HelperError(
+              "tagNote",
+              "note tagging error\n" + e.message
+            );
           }
         }
       }
     }
   }
 
-  export async function getTagId(tag: string): Promise<string> {
-    tag = tag.trim();
-    var query = await joplin.data.get(["search"], {
-      query: tag,
-      type: "tag",
-      fields: "id,title",
-    });
-    if (query.items.length === 0) {
-      console.log("Create tag '" + tag + "'");
+  export async function createTag(tag: string): Promise<string> {
+    console.log("Create tag '" + tag + "'");
+    try {
       const newTag = await joplin.data.post(["tags"], null, {
         title: tag,
       });
       return newTag.id;
-    } else if (query.items.length === 1) {
-      return query.items[0].id;
+    } catch (e) {
+      throw new HelperError("createTag", `create tag: ${tag}:` + e.message);
+    }
+  }
+
+  export async function getTagId(tag: string): Promise<string> {
+    const tagName = tag.trim();
+    try {
+      var tags = await joplin.data.get(["search"], {
+        query: tag,
+        type: "tag",
+        fields: "id,title",
+      });
+    } catch (e) {
+      throw new HelperError("getTagId", `search tag: ${tagName}:` + e.message);
+    }
+
+    if (tags.items.length === 0) {
+      console.log("no tags found");
+      return await createTag(tag);
     } else {
-      console.error("More than one tag match!");
-      console.error(query);
-      return null;
+      do {
+        for (const tag of tags.items) {
+          console.log(tag);
+          if (tag.title == tagName) {
+            return tag.id;
+          }
+        }
+      } while (tags.has_more);
+      console.log("no exact match found");
+      return await createTag(tag);
     }
   }
 

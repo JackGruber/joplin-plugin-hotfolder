@@ -2,7 +2,7 @@ interface processFile {
   path: string;
   hotfolderNr: number;
   prevStat: any;
-  reCheck: number;
+  intervallFileFinished: number;
 }
 interface hotfolderSettings {
   notebookId: string;

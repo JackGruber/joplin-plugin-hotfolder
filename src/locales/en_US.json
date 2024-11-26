@@ -34,7 +34,7 @@
     },
     "intervallFileFinished": {
       "label": "File ready",
-      "description": "Every how many seconds should be checked whether the file in the hotfolder is ready (Checks the file size and file lock additionally), 0 = Deactivated"
+      "description": "Every how many seconds should be checked whether the file in the hotfolder is ready (Checks the file size and file lock additionally)"
     },
     "usePolling": {
       "label": "Polling",
@@ -42,7 +42,7 @@
     },
     "pollingIntervall": {
       "label": "Polling intervall",
-      "description": "Interval in seconds for querying the hotfolder"
+      "description": "Interval in milliseconds for querying the hotfolder"
     }
   },
   "msg": {

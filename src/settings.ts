@@ -93,9 +93,9 @@ export namespace settings {
       settingsObject[
         "intervallFileFinished" + (hotfolderNr == 0 ? "" : hotfolderNr)
       ] = {
-        value: 0,
-        minimum: 0,
-        maximum: 100,
+        value: 2,
+        minimum: 1,
+        maximum: 120,
         type: SettingItemType.Int,
         section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
         public: true,
@@ -197,9 +197,17 @@ export namespace settings {
       "importTags" + hotfolderNrStr
     );
 
-    const intervallFileFinished = await joplin.settings.value(
+    let intervallFileFinished = await joplin.settings.value(
       "intervallFileFinished" + hotfolderNrStr
     );
+    // Fix old value, where 0 was possible
+    if (intervallFileFinished < 1) {
+      intervallFileFinished = 2;
+      await joplin.settings.setValue(
+        "intervallFileFinished" + hotfolderNrStr,
+        intervallFileFinished
+      );
+    }
 
     const usePolling = await joplin.settings.value(
       "usePolling" + hotfolderNrStr
