@@ -240,7 +240,7 @@ class Hotfolder {
           this.log.error("Notebook: " + importNotebook + " dose not exist");
           await this.showMsg(
             i18n.__(
-              "error.notebookNotExist",
+              "msg.error.notebookNotExist",
               importNotebook.trim(),
               hotfolderNr == 0 ? "" : hotfolderNr + 1
             )
