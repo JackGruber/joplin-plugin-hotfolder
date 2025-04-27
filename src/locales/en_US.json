@@ -43,6 +43,10 @@
     "pollingIntervall": {
       "label": "Polling intervall",
       "description": "Interval in milliseconds for querying the hotfolder"
+    },
+    "depth": {
+      "label": "Depth",
+      "description": "How many subdirectories will be checked for file import"
     }
   },
   "msg": {

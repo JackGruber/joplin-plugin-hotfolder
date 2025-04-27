@@ -3,6 +3,7 @@
 ## not released
 
 - Fix: Placeholder for the error message `notebookNotExist` was output instead of the translation string
+- Add: Option to import from SUbfolders
 
 ## v1.2.1 (2024-11-26)
 

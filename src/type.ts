@@ -14,6 +14,7 @@ interface hotfolderSettings {
   intervallFileFinished: number;
   usePolling: boolean;
   pollingIntervall: number;
+  depth: number;
 }
 
 export { processFile, hotfolderSettings };

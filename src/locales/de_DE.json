@@ -43,6 +43,10 @@
     "pollingIntervall": {
       "label": "Abfrage intervall",
       "description": "Intervall in millisekunden zur Abfrage des Hotfolders"
+    },
+    "depth": {
+      "label": "Depth",
+      "description": "Wie viel Unterordner sollen für den datei Import geprüft werden"
     }
   },
   "msg": {

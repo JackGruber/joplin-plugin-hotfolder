@@ -127,6 +127,18 @@ export namespace settings {
         description: i18n.__("settings.pollingIntervall.description"),
       };
 
+      settingsObject["depth" + (hotfolderNr == 0 ? "" : hotfolderNr)] = {
+        value: 0,
+        minimum: 0,
+        maximum: 10,
+        type: SettingItemType.Int,
+        section: "hotfolderSection" + (hotfolderNr == 0 ? "" : hotfolderNr),
+        public: true,
+        advanced: true,
+        label: i18n.__("settings.depth.label"),
+        description: i18n.__("settings.depth.description"),
+      };
+
       if (hotfolderNr === 0) {
         await joplin.settings.registerSettings({
           hotfolderAnz: {
@@ -217,6 +229,8 @@ export namespace settings {
       "pollingIntervall" + hotfolderNrStr
     );
 
+    const depth = await joplin.settings.value("depth" + hotfolderNrStr);
+
     return {
       notebookId: notebookId,
       importTags: importTags,
@@ -227,6 +241,7 @@ export namespace settings {
       usePolling: usePolling,
       pollingIntervall: pollingIntervall,
       intervallFileFinished: intervallFileFinished,
+      depth: depth,
     };
   }
 }
