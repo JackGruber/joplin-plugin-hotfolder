@@ -240,7 +240,7 @@ class Hotfolder {
           this.log.error("Notebook: " + importNotebook + " dose not exist");
           await this.showMsg(
             i18n.__(
-              "error.notebookNotExist",
+              "msg.error.notebookNotExist",
               importNotebook.trim(),
               hotfolderNr == 0 ? "" : hotfolderNr + 1
             )
@@ -254,7 +254,7 @@ class Hotfolder {
         const watcher = chokidar.watch(hotfolderPath, {
           persistent: true,
           alwaysStat: true,
-          depth: 0,
+          depth: hotfolderSettings.depth,
           usePolling: hotfolderSettings.usePolling,
           interval: hotfolderSettings.pollingIntervall,
           binaryInterval: hotfolderSettings.pollingIntervall * 2,

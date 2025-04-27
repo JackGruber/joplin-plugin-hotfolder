@@ -2,6 +2,11 @@
 
 ## not released
 
+## v1.2.2 (2025-04-27)
+
+- Fix: Placeholder for the error message `notebookNotExist` was output instead of the translation string
+- Add: Option to import from SUbfolders
+
 ## v1.2.1 (2024-11-26)
 
 - Fix: Don't add empty tag when tag ends with `,` or contains several `,` directly behind each other #37
