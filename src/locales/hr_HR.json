@@ -1,0 +1,57 @@
+{
+  "settings": {
+    "hotfolderPath": {
+      "label": "Putanja Hotfolder mape",
+      "description": "Mapa iz koje se trebaju uvesti datoteke"
+    },
+    "ignoreFiles": {
+      "label": "Zanemari datoteke",
+      "description": "Popis zarezom odvojenih datoteka koje će se zanemariti"
+    },
+    "extensionsAddAsText": {
+      "label": "Dodaj kao tekst",
+      "description": "Popis zarezom odvojenih sufiksa datoteka koje će se uvesti kao tekst"
+    },
+    "importNotebook": {
+      "label": "Bilježnica",
+      "description": "Ako bilježnica nije navedena, uvoz se izvršava u trenutačnu bilježnicu. Podbilježnice se mogu definirati putem Project\\Scans"
+    },
+    "importTags": {
+      "label": "Oznake",
+      "description": "Popis zarezom odvojenih oznaka koje će se dodati bilješci"
+    },
+    "hotfolderAnz": {
+      "label": "Broj Hotfolder mapa",
+      "description": "Dodatni odjeljci Hotfolder mapa pojavljuju se s lijeve strane (Ponovo pokreni Joplin nakon mijenjanja)"
+    },
+    "extensionsAddTextAsTodo": {
+      "label": "Dodaj tekstualne bilješke kao „Zadatak”",
+      "description": "Kao bilješke vrste „Zadatak” će se uvesti samo tekstualne bilješke, sve ostale vrste datoteka će se uvesti kao privici u redovnim bilješkama"
+    },
+    "fileLogLevel": {
+      "label": "Razina zapisivanja",
+      "description": "Razina zapisivanja za datoteku dnevnika %s"
+    },
+    "intervallFileFinished": {
+      "label": "Datoteka spremna",
+      "description": "Svakih koliko sekundi treba provjeriti je li datoteka u Hotfolder mapi spremna (dodatno provjerava veličinu datoteke i zaključavanje datoteke)"
+    },
+    "usePolling": {
+      "label": "Provjeravanje",
+      "description": "Može biti potrebno za Hotfolder mape u mreži. Uzrokuje ponešto veće opterećenje sustava"
+    },
+    "pollingIntervall": {
+      "label": "Interval provjeravanja",
+      "description": "Interval u milisekundama za provjeru Hotfolder mapa"
+    },
+    "depth": {
+      "label": "Dubina",
+      "description": "Koliko poddirektorija će se provjeravati za uvoz datoteka"
+    }
+  },
+  "msg": {
+    "error": {
+      "notebookNotExist": "Bilježnica `%s` za odredište uvoza Hotfolder mape %s ne postoji koristi trenutačnu bilježnicu za uvoz"
+    }
+  }
+}
