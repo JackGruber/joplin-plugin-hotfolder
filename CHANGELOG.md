@@ -2,6 +2,8 @@
 
 ## not released
 
+- Add: Croatian translation (hr_HR) #43
+
 ## v1.2.2 (2025-04-27)
 
 - Fix: Placeholder for the error message `notebookNotExist` was output instead of the translation string
