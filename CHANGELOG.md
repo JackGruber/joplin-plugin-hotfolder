@@ -2,6 +2,8 @@
 
 ## not released
 
+## v1.2.3 (2025-12-13)
+
 - Add: Croatian translation (hr_HR) #43
 
 ## v1.2.2 (2025-04-27)
